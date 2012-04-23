@@ -4,37 +4,33 @@ import com.game.roadnetwork.Direction;
 import com.game.roadnetwork.GeographicCrossWay;
 import com.game.roadnetwork.Road;
 import com.game.roadnetwork.Way;
+import org.jgrapht.DirectedGraph;
 import org.jgrapht.graph.SimpleDirectedGraph;
 
 import java.util.*;
 
 /**
- * Date: 19.04.12
- * Time: 14:51
+ * Date: 23.04.12
+ * Time: 9:12
  *
  * @author: Alexey
  */
-public class RoadGraph extends SimpleDirectedGraph<CrossWayCoordinate, WayEdge> {
-
-    public RoadGraph() {
-        super(WayEdge.class);
-    }
-
-    public RoadGraph(GeographicCrossWay... crossWayList) {
-        super(WayEdge.class);
+public class GraphFactory {
+    public static DirectedGraph<CrossWayCoordinate, WayEdge> createGraphForRoad(GeographicCrossWay... crossWayList) {
+        SimpleDirectedGraph<CrossWayCoordinate, WayEdge> directedGraph = new SimpleDirectedGraph<CrossWayCoordinate, WayEdge>(WayEdge.class);
         Map<Way, CrossWayCoordinate> ways = new HashMap<Way, CrossWayCoordinate>();
         for (GeographicCrossWay crossWay : crossWayList) {
-            Map<Way, CrossWayCoordinate> res = createGraphForCrossWay(crossWay);
+            Map<Way, CrossWayCoordinate> res = createGraphForCrossWay(crossWay, directedGraph);
             Set<Way> waySet = res.keySet();
             for (Way way : waySet) {
                 if (ways.containsKey(way)) {
                     CrossWayCoordinate c1 = ways.remove(way);
                     CrossWayCoordinate c2 = res.get(way);
-                    if ((way.getRoad().getStart().equals(c1.getCrossWay()) && (way.getAllowedDirection() == Direction.FORWARD)) &&
+                    if ((way.getRoad().getStart().equals(c1.getCrossWay()) && (way.getAllowedDirection() == Direction.FORWARD)) ||
                             (way.getRoad().getStart().equals(c2.getCrossWay()) && (way.getAllowedDirection() == Direction.BACK))) {
-                        addEdge(c1, c2, new WayEdge(way));
+                        directedGraph.addEdge(c1, c2, new WayEdge(way));
                     } else {
-                        addEdge(c1, c2, new WayEdge(way));
+                        directedGraph.addEdge(c2, c1, new WayEdge(way));
                     }
                 } else {
                     ways.put(way, res.get(way));
@@ -44,15 +40,15 @@ public class RoadGraph extends SimpleDirectedGraph<CrossWayCoordinate, WayEdge> 
         if (!ways.isEmpty()) {
             //throw new IllegalArgumentException("There are ways without crossWays");
         }
+        return directedGraph;
+    }
+
+    public static DirectedGraph<CrossWayCoordinate, WayEdge> createGraphForRoad(List<GeographicCrossWay> crossWayList) {
+        return createGraphForRoad(crossWayList.toArray(new GeographicCrossWay[crossWayList.size()]));
     }
 
 
-    public RoadGraph(List<GeographicCrossWay> crossWayList) {
-        this(crossWayList.toArray(new GeographicCrossWay[crossWayList.size()]));
-    }
-
-
-    private Map<Way, CrossWayCoordinate> createGraphForCrossWay(GeographicCrossWay crossWay) {
+    private static Map<Way, CrossWayCoordinate> createGraphForCrossWay(GeographicCrossWay crossWay, DirectedGraph<CrossWayCoordinate, WayEdge> graph) {
         List<Road> roadList = crossWay.getRoads();
         HashMap<Way, CrossWayCoordinate> res = new HashMap<Way, CrossWayCoordinate>();
         ArrayList<ArrayList<MathLine>> traceLines = new ArrayList<ArrayList<MathLine>>(crossWay.getPlacesCount());
@@ -70,10 +66,21 @@ public class RoadGraph extends SimpleDirectedGraph<CrossWayCoordinate, WayEdge> 
             throw new IllegalArgumentException("Can't build graph for cross. It contains only empty roads.");
         }
 
-        double triangleAngle = 2 * Math.PI / crossWay.getPlacesCount();
-        double catet = maxWays / (Math.sin(triangleAngle / 2));
-        double radius = maxWays / (Math.tan(triangleAngle / 2));
+        double triangleAngle;
+        double catet;
+        double radius;
+
+        if (crossWay.getPlacesCount() > 1) {
+            triangleAngle = 2 * Math.PI / crossWay.getPlacesCount();
+            catet = (maxWays / 2) / (Math.sin(triangleAngle / 2));
+            radius = (maxWays / 2) / (Math.tan(triangleAngle / 2));
+        } else {
+            triangleAngle = Math.PI;
+            catet = maxWays/2;
+            radius = 0;
+        }
         double mRadius;
+
 
         if ((crossWay.getPlacesCount() % 2) == 0) {
             mRadius = -radius;
@@ -85,10 +92,10 @@ public class RoadGraph extends SimpleDirectedGraph<CrossWayCoordinate, WayEdge> 
             traceLines.add(new ArrayList<MathLine>());
             if ((road != null) && (road.getWaysNumber() != 0)) {
                 int offs = (int) ((maxWays - road.getWaysNumber()) / 2);
-                double startX =  (catet * crossWay.getScale() * Math.cos(triangleAngle * i));
-                double startY =  (catet * crossWay.getScale() * Math.sin(triangleAngle * i));
+                double startX = (catet * crossWay.getScale() * Math.cos(triangleAngle * i));
+                double startY = (catet * crossWay.getScale() * Math.sin(triangleAngle * i));
 
-                double endX =  (catet * crossWay.getScale() * Math.cos(triangleAngle * (i + 1)));
+                double endX = (catet * crossWay.getScale() * Math.cos(triangleAngle * (i + 1)));
                 double endY = (catet * crossWay.getScale() * Math.sin(triangleAngle * (i + 1)));
                 for (double j = -maxWays / 2, kk = 0; j < maxWays / 2; j++, kk++) {
                     if (kk < offs) {
@@ -99,18 +106,13 @@ public class RoadGraph extends SimpleDirectedGraph<CrossWayCoordinate, WayEdge> 
                     double dx = ((endX - startX) / (maxWays)) * (0.5f + j);
                     double dy = ((endY - startY) / (maxWays)) * (0.5f + j);
 
-                    double spX =  ((radius * crossWay.getScale()) * Math.cos(triangleAngle / 2 + triangleAngle * i)) - dx;
-                    double spY =  ((radius * crossWay.getScale()) * Math.sin(triangleAngle / 2 + triangleAngle * i)) - dy;
-                    double epX =  ((mRadius * crossWay.getScale()) * Math.cos(triangleAngle / 2 + triangleAngle * i)) - dx;
+                    double spX = ((radius * crossWay.getScale()) * Math.cos(triangleAngle / 2 + triangleAngle * i)) - dx;
+                    double spY = ((radius * crossWay.getScale()) * Math.sin(triangleAngle / 2 + triangleAngle * i)) - dy;
+                    double epX = ((mRadius * crossWay.getScale()) * Math.cos(triangleAngle / 2 + triangleAngle * i)) - dx;
                     double epY = ((mRadius * crossWay.getScale()) * Math.sin(triangleAngle / 2 + triangleAngle * i)) - dy;
-                    /*
                     traceLines.get(i).add(new MathLine(
                             new Coordinate(spX, spY).rotateAndMove(crossWay.getAngle(), crossWay.getX(), crossWay.getY()),
                             new Coordinate(epX, epY).rotateAndMove(crossWay.getAngle(), crossWay.getX(), crossWay.getY())));
-                    */
-                    traceLines.get(i).add(new MathLine(
-                            new Coordinate(spX, spY).rotate(crossWay.getAngle()),
-                            new Coordinate(epX, epY).rotate(crossWay.getAngle())));
 
                 }
             }
@@ -122,7 +124,7 @@ public class RoadGraph extends SimpleDirectedGraph<CrossWayCoordinate, WayEdge> 
                 Coordinate startPoint = lines1.get(k).getStart();
                 CrossWayCoordinate roadEnter = new CrossWayCoordinate(startPoint, crossWay);
                 res.put(crossWay.getRoad(i).getWay(k), roadEnter);
-                addVertex(roadEnter);
+                graph.addVertex(roadEnter);
 
             }
             for (int j = 0; j < traceLines.size(); j++) {
@@ -138,7 +140,7 @@ public class RoadGraph extends SimpleDirectedGraph<CrossWayCoordinate, WayEdge> 
                             }
                             if (coordinate != null) {
                                 CrossWayCoordinate crossWayCoordinate = new CrossWayCoordinate(coordinate, crossWay);
-                                addVertex(crossWayCoordinate);
+                                graph.addVertex(crossWayCoordinate);
                                 crossPoints.add(crossWayCoordinate);
                             }
                         }
@@ -157,9 +159,9 @@ public class RoadGraph extends SimpleDirectedGraph<CrossWayCoordinate, WayEdge> 
                         for (int p = 0; p < crossPoints.size() - 1; p++) {
                             if (!crossPoints.get(p).equals(crossPoints.get(p + 1))) {
                                 if (direction == Direction.FORWARD) {
-                                    addEdge(crossPoints.get(p), crossPoints.get(p + 1));
+                                    graph.addEdge(crossPoints.get(p), crossPoints.get(p + 1));
                                 } else {
-                                    addEdge(crossPoints.get(p + 1), crossPoints.get(p));
+                                    graph.addEdge(crossPoints.get(p + 1), crossPoints.get(p));
                                 }
                             }
                         }
@@ -175,7 +177,7 @@ public class RoadGraph extends SimpleDirectedGraph<CrossWayCoordinate, WayEdge> 
     }
 
 
-    private class PointComparator implements Comparator<CrossWayCoordinate> {
+    private static class PointComparator implements Comparator<CrossWayCoordinate> {
         private Coordinate start;
 
 

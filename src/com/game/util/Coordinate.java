@@ -7,7 +7,7 @@ package com.game.util;
  * @author: Alexey
  */
 public class Coordinate {
-    public static double MAX_DELTA = 0.00001;
+    public static double MAX_DELTA = 0.00000000000001;
     private double x;
     private double y;
 

@@ -1,13 +1,13 @@
 package com.game.graphic.util;
 
 import com.game.util.CrossWayCoordinate;
-import com.game.util.RoadGraph;
 import com.game.util.WayEdge;
 import org.anddev.andengine.entity.primitive.Line;
 import org.anddev.andengine.entity.primitive.Rectangle;
 import org.anddev.andengine.entity.scene.Scene;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jgrapht.Graph;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -39,7 +39,7 @@ public class VisualGraph extends Scene {
     public static final float DEFAULT_ARROW_B = 0;
 
 
-    public VisualGraph(RoadGraph roadGraph, int vertexSize, int lineWidth, int arrowSize, float lineR, float lineG, float lineB, float vertexR, float vertexG, float vertexB, float arrowR, float arrowG, float arrowB) {
+    public VisualGraph(Graph<CrossWayCoordinate,WayEdge> roadGraph, int vertexSize, int lineWidth, int arrowSize, float lineR, float lineG, float lineB, float vertexR, float vertexG, float vertexB, float arrowR, float arrowG, float arrowB) {
 
 
         if (roadGraph == null) {
@@ -77,7 +77,7 @@ public class VisualGraph extends Scene {
         }
     }
 
-    public VisualGraph(RoadGraph roadGraph) {
+    public VisualGraph(Graph<CrossWayCoordinate,WayEdge> roadGraph) {
         this(roadGraph, DEFAULT_VERTEX_WIDTH, DEFAULT_LINE_WIDTH, DEFAULT_ARROW_WIDTH, DEFAULT_LINE_R, DEFAULT_LINE_G, DEFAULT_LINE_B, DEFAULT_VERTEX_R, DEFAULT_VERTEX_G, DEFAULT_VERTEX_B, DEFAULT_ARROW_R, DEFAULT_ARROW_G, DEFAULT_ARROW_B);
         LOG.warn("You are using  constructor for creating VisualGraph with default parameters. It is recommended to use flexible constructor and some properties file.");
     }

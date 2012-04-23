@@ -66,8 +66,8 @@ public class MathLine {
 
 
         // calculate the lengths of the two lines
-        len1 =  Math.sqrt(xD1 * xD1 + yD1 * yD1);
-        len2 =  Math.sqrt(xD2 * xD2 + yD2 * yD2);
+        len1 = Math.sqrt(xD1 * xD1 + yD1 * yD1);
+        len2 = Math.sqrt(xD2 * xD2 + yD2 * yD2);
 
         // calculate angle between the two lines.
         dot = (xD1 * xD2 + yD1 * yD2); // dot product
@@ -75,7 +75,8 @@ public class MathLine {
 
         // if abs(angle)==1 then the lines are parallell,
         // so no intersection is possible
-        if (Math.abs(deg) == 1) return null;
+        double df = (1 - Math.abs(deg));
+        if (df < Coordinate.MAX_DELTA) return null;
 
         // find intersection Pt between two lines
         Coordinate pt = new Coordinate(0, 0);
@@ -92,7 +93,7 @@ public class MathLine {
             xD2 = pt.getX() - end.getX();
             yD1 = pt.getY() - start.getY();
             yD2 = pt.getY() - end.getY();
-            segmentLen1 =  (Math.sqrt(xD1 * xD1 + yD1 * yD1) + Math.sqrt(xD2 * xD2 + yD2 * yD2));
+            segmentLen1 = (Math.sqrt(xD1 * xD1 + yD1 * yD1) + Math.sqrt(xD2 * xD2 + yD2 * yD2));
 
 
             // calculate the combined length of the two segments
@@ -112,6 +113,9 @@ public class MathLine {
                 return null;
         }
         // return the valid intersection
+        if (Double.isNaN(pt.getX()) || Double.isNaN(pt.getY())) {
+            throw new ArithmeticException("Intersection of " + this + " and " + line + " is " + pt + ". Angle between lines is "+df+". Check Coordinate.MAX_DELTA");
+        }
         return pt;
     }
 
@@ -164,7 +168,7 @@ public class MathLine {
         } else if ((dx == 0) && (dy == 0)) {
             return 0;
         }
-        return  ((dx * dy) / Math.sqrt(dx * dx + dy * dy));
+        return ((dx * dy) / Math.sqrt(dx * dx + dy * dy));
     }
 
     public double getDistance(MathLine line) {
@@ -188,7 +192,7 @@ public class MathLine {
             throw new IllegalArgumentException(new NullPointerException("'line' can't be null."));
         }
 
-        if (getDistance(line) >delta) {
+        if (getDistance(line) > delta) {
             return null;
         }
         ArrayList<Double> arX = new ArrayList<Double>() {{
@@ -212,7 +216,7 @@ public class MathLine {
     public double getLength() {
         double dx = getEnd().getX() - getStart().getX();
         double dy = getEnd().getY() - getStart().getY();
-        return  Math.sqrt(dx * dx + dy * dy);
+        return Math.sqrt(dx * dx + dy * dy);
     }
 
     public void setStart(Coordinate start) {
