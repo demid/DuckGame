@@ -14,14 +14,12 @@ import org.anddev.andengine.engine.options.resolutionpolicy.RatioResolutionPolic
 import org.anddev.andengine.entity.scene.Scene;
 import org.anddev.andengine.entity.scene.background.ColorBackground;
 import org.anddev.andengine.entity.util.FPSLogger;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
 
 
 public class App extends BaseExample {
-    private final static Log LOG = LogFactory.getLog(App.class);
-    private static final int CAMERA_WIDTH = (int) (720 * 1);
-    private static final int CAMERA_HEIGHT = (int) (480 * 1);
+    private static final int CAMERA_WIDTH = (int) (720 );
+    private static final int CAMERA_HEIGHT = (int) (480);
     private Camera mCamera;
 
     @Override
@@ -69,6 +67,20 @@ public class App extends BaseExample {
 
         VisualGraph visualGraph = new VisualGraph(GraphFactory.createGraphForRoad(c1, c2, c3,c4,c));
 
+        /*
+        GeographicCrossWay c = new GeographicCrossWay(8, 0, 0,0, scale);
+        Road r1 = new Road(new Way(Direction.FORWARD),new Way(Direction.BACK));
+        Road r2 = new Road(new Way(Direction.FORWARD),new Way(Direction.FORWARD));
+        Road r3 = new Road(new Way(Direction.BACK),new Way(Direction.FORWARD));
+        Road r4 = new Road(new Way(Direction.FORWARD),new Way(Direction.FORWARD));
+
+        c.attachRoad(0,r1,true);
+        c.attachRoad(2,r2,true);
+        c.attachRoad(4,r3,false);
+        c.attachRoad(6,r4,false);
+
+        VisualGraph visualGraph = new VisualGraph(GraphFactory.createGraphForRoad(c));
+         */
         visualGraph.setPosition(CAMERA_WIDTH / 2, CAMERA_HEIGHT / 2);
         scene.attachChild(visualGraph);
 

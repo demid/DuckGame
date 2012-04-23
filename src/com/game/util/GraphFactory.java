@@ -97,11 +97,9 @@ public class GraphFactory {
 
                 double endX = (catet * crossWay.getScale() * Math.cos(triangleAngle * (i + 1)));
                 double endY = (catet * crossWay.getScale() * Math.sin(triangleAngle * (i + 1)));
-                for (double j = -maxWays / 2, kk = 0; j < maxWays / 2; j++, kk++) {
+                for (double j = -maxWays / 2, kk = 0; (kk - offs) < road.getWaysNumber(); j++, kk++) {
                     if (kk < offs) {
                         continue;
-                    } else if ((kk - offs) >= road.getWaysNumber()) {
-                        break;
                     }
                     double dx = ((endX - startX) / (maxWays)) * (0.5f + j);
                     double dy = ((endY - startY) / (maxWays)) * (0.5f + j);
@@ -120,6 +118,9 @@ public class GraphFactory {
 
         for (int i = 0; i < traceLines.size(); i++) {
             ArrayList<MathLine> lines1 = traceLines.get(i);
+            if(lines1.isEmpty()){
+                continue;
+            }
             for (int k = 0; k < lines1.size(); k++) {
                 Coordinate startPoint = lines1.get(k).getStart();
                 CrossWayCoordinate roadEnter = new CrossWayCoordinate(startPoint, crossWay);
@@ -130,13 +131,21 @@ public class GraphFactory {
             for (int j = 0; j < traceLines.size(); j++) {
                 if (i != j) {
                     ArrayList<MathLine> lines2 = traceLines.get(j);
+                    if(lines2.isEmpty()){
+                        continue;
+                    }
                     Road curRoad = crossWay.getRoad(i);
                     for (int k = 0; k < lines1.size(); k++) {
                         ArrayList<CrossWayCoordinate> crossPoints = new ArrayList<CrossWayCoordinate>(lines1.size() * lines2.size());
-                        for (int p = 0; p < lines2.size(); p++) {
-                            Coordinate coordinate = lines1.get(k).getLineIntersection(lines2.get(p));
-                            if ((coordinate == null) && (lines1.get(k).isParallel(lines2.get(p)))) {
-                                coordinate = lines1.get(k).getParallelLineIntersection(lines2.get(p));
+                        for (MathLine line:  lines2) {
+                            Coordinate coordinate = lines1.get(k).getLineIntersection(line);
+                            if ((coordinate == null) && (lines1.get(k).isParallel(line))) {
+                                coordinate = lines1.get(k).getParallelLineIntersection(line);
+                                if(coordinate!=null){
+                                    CrossWayCoordinate crossWayCoordinate = new CrossWayCoordinate(line.getStart(), crossWay);
+                                    graph.addVertex(crossWayCoordinate);
+                                    crossPoints.add(crossWayCoordinate);
+                                }
                             }
                             if (coordinate != null) {
                                 CrossWayCoordinate crossWayCoordinate = new CrossWayCoordinate(coordinate, crossWay);
