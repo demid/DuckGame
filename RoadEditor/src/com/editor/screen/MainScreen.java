@@ -1,16 +1,12 @@
 package com.editor.screen;
 
 import com.editor.res.Properties;
-import com.editor.visualcomponent.GridPanel;
+import com.editor.visualcomponent.JGridPanel;
 import org.apache.log4j.Logger;
-import sun.awt.HorizBagLayout;
-import sun.awt.VerticalBagLayout;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * Date: 23.04.12
@@ -21,7 +17,7 @@ import java.awt.event.ActionListener;
 public class MainScreen extends JFrame {
     private final static Logger LOGGER = Logger.getLogger(MainScreen.class);
     private JPanel toolBar = new JPanel();
-    private GridPanel workAria  = new GridPanel();
+    private JGridPanel workAria  = new JGridPanel();
     public MainScreen() {
         super(Properties.getLabel(Properties.Labels.MAIN_SCREEN_LABEL));
         setExtendedState(Properties.getInt(Properties.Settings.MAIN_SCREEN_STATE));

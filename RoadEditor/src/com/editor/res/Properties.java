@@ -32,6 +32,7 @@ public class Properties {
         public static final String MAIN_SCREEN_LABEL = "MAIN_SCREEN_LABEL";
         public static final String WIDTH_SLIDER_TITLE = "WIDTH_SLIDER_TITLE";
         public static final String HEIGHT_SLIDER_TITLE = "HEIGHT_SLIDER_TITLE";
+        public static final String DRAW_GRID_TITLE="DRAW_GRID_TITLE";
     }
 
     public interface Settings {
@@ -49,9 +50,10 @@ public class Properties {
         public static final String EDIT_SCREEN_MIN_HEIGHT = "EDIT_SCREEN_MIN_HEIGHT";
         public static final String EDIT_SCREEN_CELL_SIZE = "EDIT_SCREEN_CELL_SIZE";
         public static final String EDIT_SCREEN_CELL_BORDER_WIDTH = "EDIT_SCREEN_CELL_BORDER_WIDTH";
-        public static final String EDIT_SCREEN_SLIDER_MAJOR_TRICK_SPACING = "EDIT_SCREEN_SLIDER_MAJOR_TRICK_SPACING";
-        public static final String EDIT_SCREEN_SLIDER_MINOR_TRICK_SPACING = "EDIT_SCREEN_SLIDER_MINOR_TRICK_SPACING";
-        public static final String EDIT_SCREEN_SLIDER_MAX_VALUE = "EDIT_SCREEN_SLIDER_MAX_VALUE";
+        public static final String EDIT_SCREEN_SPINNER_WIDTH = "EDIT_SCREEN_SPINNER_WIDTH";
+        public static final String EDIT_SCREEN_SPINNER_HEIGHT = "EDIT_SCREEN_SPINNER_HEIGHT";
+        public static final String EDIT_SCREEN_SPINNER_STEP="EDIT_SCREEN_SPINNER_STEP";
+        public static final String EDIT_SCREEN_DRAW_GREED="EDIT_SCREEN_DRAW_GREED";
 
     }
 
@@ -63,5 +65,10 @@ public class Properties {
     public static int getInt(String name) {
         LOGGER.trace("Trying to get int : " + name);
         return Integer.parseInt(PROPERTIES.getProperty(name));
+    }
+
+    public static boolean getBoolean(String name) {
+        LOGGER.trace("Trying to get boolean : " + name);
+        return Boolean.parseBoolean(PROPERTIES.getProperty(name));
     }
 }

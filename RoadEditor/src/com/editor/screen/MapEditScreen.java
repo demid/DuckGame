@@ -2,13 +2,15 @@ package com.editor.screen;
 
 import com.editor.map.Map;
 import com.editor.res.Properties;
-import com.editor.visualcomponent.GridPanel;
+import com.editor.visualcomponent.JGridPanel;
 import org.apache.log4j.Logger;
 import sun.awt.VerticalBagLayout;
 
 import javax.swing.*;
-import javax.swing.border.LineBorder;
+import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 
 /**
@@ -19,11 +21,12 @@ import java.awt.*;
  */
 public class MapEditScreen extends JFrame {
     private final static Logger LOGGER = Logger.getLogger(MapEditScreen.class);
-    private GridPanel workAria = new GridPanel();
-    private JSlider widthSlider = new JSlider(0,Properties.getInt(Properties.Settings.EDIT_SCREEN_SLIDER_MAX_VALUE));
-    private JSlider heightSlider = new JSlider(0,Properties.getInt(Properties.Settings.EDIT_SCREEN_SLIDER_MAX_VALUE));
+    private JGridPanel workAria = new JGridPanel();
     private JPanel containerWorkAria = new JPanel();
     private Map map;
+    private JSpinner widthSpinner = new JSpinner(new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, Properties.getInt(Properties.Settings.EDIT_SCREEN_SPINNER_STEP)));
+    private JSpinner heightSpinner = new JSpinner(new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, Properties.getInt(Properties.Settings.EDIT_SCREEN_SPINNER_STEP)));
+    private JCheckBox drawGrid = new JCheckBox(Properties.getLabel(Properties.Labels.DRAW_GRID_TITLE), Properties.getBoolean(Properties.Settings.EDIT_SCREEN_DRAW_GREED));
 
     public MapEditScreen() throws HeadlessException {
         initialization();
@@ -64,43 +67,43 @@ public class MapEditScreen extends JFrame {
         //workAria initialization
         workAria.setBorderCellWidth(Properties.getInt(Properties.Settings.EDIT_SCREEN_CELL_BORDER_WIDTH));
         workAria.setCellSize(Properties.getInt(Properties.Settings.EDIT_SCREEN_CELL_SIZE));
-        workAria.setBorder(new LineBorder(Color.GREEN));
+        workAria.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
 
         //containerWorkAria initialization
-        containerWorkAria.setBorder(new LineBorder(Color.BLACK));
+        containerWorkAria.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
         containerWorkAria.setLayout(new GridBagLayout());
-        containerWorkAria.setBackground(Color.GRAY);
         //toolBar initialization
         toolBar.setLayout(new VerticalBagLayout());
-        JPanel widthPanel  = new JPanel();
+        toolBar.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
+
+        JPanel widthPanel = new JPanel();
         widthPanel.setBorder(new TitledBorder(Properties.getLabel(Properties.Labels.WIDTH_SLIDER_TITLE)));
-        widthPanel.add(widthSlider);
+        widthSpinner.setPreferredSize(new Dimension(Properties.getInt(Properties.Settings.EDIT_SCREEN_SPINNER_WIDTH),
+                Properties.getInt(Properties.Settings.EDIT_SCREEN_SPINNER_HEIGHT)));
+        widthPanel.add(widthSpinner);
+        widthSpinner.addChangeListener(sizeChangeListener);
         toolBar.add(widthPanel);
-        widthSlider.setMajorTickSpacing(Properties.getInt(Properties.Settings.EDIT_SCREEN_SLIDER_MAJOR_TRICK_SPACING));
-        widthSlider.setMinorTickSpacing(Properties.getInt(Properties.Settings.EDIT_SCREEN_SLIDER_MINOR_TRICK_SPACING));
-        widthSlider.setPaintTicks(true);
-        widthSlider.setPaintLabels(true);
-        widthSlider.setPaintTrack(true);
-        widthSlider.setEnabled(false);
+        widthSpinner.setEnabled(false);
 
-
-        JPanel heightPanel  = new JPanel();
+        JPanel heightPanel = new JPanel();
         heightPanel.setBorder(new TitledBorder(Properties.getLabel(Properties.Labels.HEIGHT_SLIDER_TITLE)));
-        heightPanel.add(heightSlider);
+        heightSpinner.setPreferredSize(new Dimension(Properties.getInt(Properties.Settings.EDIT_SCREEN_SPINNER_WIDTH),
+                Properties.getInt(Properties.Settings.EDIT_SCREEN_SPINNER_HEIGHT)));
+        heightPanel.add(heightSpinner);
+        heightSpinner.setEnabled(false);
+        heightSpinner.addChangeListener(sizeChangeListener);
         toolBar.add(heightPanel);
-        heightSlider.setMajorTickSpacing(Properties.getInt(Properties.Settings.EDIT_SCREEN_SLIDER_MAJOR_TRICK_SPACING));
-        heightSlider.setMinorTickSpacing(Properties.getInt(Properties.Settings.EDIT_SCREEN_SLIDER_MINOR_TRICK_SPACING));
-        heightSlider.setPaintTicks(true);
-        heightSlider.setPaintLabels(true);
-        heightSlider.setPaintTrack(true);
-        heightSlider.setEnabled(false);
 
-        toolBar.setBorder(new LineBorder(Color.BLACK));
-
+        drawGrid.setPreferredSize(new Dimension(Properties.getInt(Properties.Settings.EDIT_SCREEN_SPINNER_WIDTH),
+                Properties.getInt(Properties.Settings.EDIT_SCREEN_SPINNER_HEIGHT)));
+        toolBar.add(drawGrid);
+        drawGrid.addChangeListener(drawGridListener);
 
         containerWorkAria.add(workAria);
 
-        getContentPane().add(new JScrollPane(containerWorkAria), BorderLayout.CENTER);
+        JScrollPane jScrollPane = new JScrollPane(containerWorkAria);
+        jScrollPane.setBorder(BorderFactory.createEmptyBorder());
+        getContentPane().add(jScrollPane, BorderLayout.CENTER);
         getContentPane().add(toolBar, BorderLayout.EAST);
 
 
@@ -111,15 +114,42 @@ public class MapEditScreen extends JFrame {
         return map;
     }
 
+    private ChangeListener drawGridListener = new ChangeListener() {
+        @Override
+        public void stateChanged(ChangeEvent e) {
+            if (e instanceof ChangeEvent) {
+                workAria.setDrawGrid(drawGrid.isSelected());
+                containerWorkAria.updateUI();
+            }
+        }
+    };
+
+    private ChangeListener sizeChangeListener = new ChangeListener() {
+        @Override
+        public void stateChanged(ChangeEvent e) {
+            if (e instanceof ChangeEvent) {
+                if (e.getSource() == heightSpinner) {
+                    map.setHeight((Integer) heightSpinner.getValue());
+                } else if (e.getSource() == widthSpinner) {
+                    map.setWidth((Integer) widthSpinner.getValue());
+                }
+                workAria.setPreferredSize(new Dimension(map.getWidth(), map.getHeight()));
+                workAria.setMinimumSize(new Dimension(map.getWidth(), map.getHeight()));
+                containerWorkAria.updateUI();
+            }
+
+        }
+    };
+
     public void loadMap(Map map) {
         setAndCheckMap(map);
         workAria.setPreferredSize(new Dimension(map.getWidth(), map.getHeight()));
         workAria.setMinimumSize(new Dimension(map.getWidth(), map.getHeight()));
-        containerWorkAria.updateUI();
-        widthSlider.setEnabled(true);
-        widthSlider.setValue(map.getWidth());
-        heightSlider.setEnabled(true);
-        heightSlider.setValue(map.getHeight());
 
+        containerWorkAria.updateUI();
+        heightSpinner.setValue(map.getHeight());
+        heightSpinner.setEnabled(true);
+        widthSpinner.setValue(map.getWidth());
+        widthSpinner.setEnabled(true);
     }
 }

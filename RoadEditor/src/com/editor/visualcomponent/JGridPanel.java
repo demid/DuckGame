@@ -9,7 +9,7 @@ import java.awt.*;
  *
  * @author: Alexey
  */
-public class GridPanel extends JPanel {
+public class JGridPanel extends JPanel {
     public static final int DEFAULT_CELL_SIZE = 5;
     public static final int DEFAULT_BORDER_CELL_WIDTH = 1;
     public static final Color DEFAULT_BORDER_CELL_COLOR = Color.BLACK;
@@ -22,19 +22,19 @@ public class GridPanel extends JPanel {
 
 
 
-    public GridPanel(LayoutManager layout, boolean isDoubleBuffered) {
+    public JGridPanel(LayoutManager layout, boolean isDoubleBuffered) {
         super(layout, isDoubleBuffered);
     }
 
-    public GridPanel(LayoutManager layout) {
+    public JGridPanel(LayoutManager layout) {
         super(layout);
     }
 
-    public GridPanel(boolean isDoubleBuffered) {
+    public JGridPanel(boolean isDoubleBuffered) {
         super(isDoubleBuffered);
     }
 
-    public GridPanel() {
+    public JGridPanel() {
     }
 
     public int getCellSize() {
