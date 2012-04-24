@@ -5,8 +5,7 @@ import com.game.util.WayEdge;
 import org.anddev.andengine.entity.primitive.Line;
 import org.anddev.andengine.entity.primitive.Rectangle;
 import org.anddev.andengine.entity.scene.Scene;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import org.jgrapht.Graph;
 
 import java.util.ArrayList;
@@ -20,7 +19,7 @@ import java.util.Set;
  */
 //TODO Add builder
 public class VisualGraph extends Scene {
-    private static final Log LOG = LogFactory.getLog(VisualGraph.class);
+    private final static Logger LOGGER = Logger.getLogger(VisualGraph.class);
     public static final int DEFAULT_VERTEX_WIDTH = 20;
     public static final int DEFAULT_LINE_WIDTH = 2;
     public static final int DEFAULT_ARROW_WIDTH = 10;
@@ -79,6 +78,6 @@ public class VisualGraph extends Scene {
 
     public VisualGraph(Graph<CrossWayCoordinate,WayEdge> roadGraph) {
         this(roadGraph, DEFAULT_VERTEX_WIDTH, DEFAULT_LINE_WIDTH, DEFAULT_ARROW_WIDTH, DEFAULT_LINE_R, DEFAULT_LINE_G, DEFAULT_LINE_B, DEFAULT_VERTEX_R, DEFAULT_VERTEX_G, DEFAULT_VERTEX_B, DEFAULT_ARROW_R, DEFAULT_ARROW_G, DEFAULT_ARROW_B);
-        LOG.warn("You are using  constructor for creating VisualGraph with default parameters. It is recommended to use flexible constructor and some properties file.");
+        LOGGER.warn("You are using  constructor for creating VisualGraph with default parameters. It is recommended to use flexible constructor and some properties file.");
     }
 }

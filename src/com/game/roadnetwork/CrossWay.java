@@ -1,6 +1,7 @@
 package com.game.roadnetwork;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -38,7 +39,7 @@ public class CrossWay {
                 list.add(roadEntry.getRoad());
             }
         }
-        return list;
+        return Collections.unmodifiableList(list);
     }
 
     public CrossWay attachRoad(int place, Road road, boolean toStart) {
