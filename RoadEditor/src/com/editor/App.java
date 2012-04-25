@@ -17,7 +17,7 @@ public class App {
 
     public static void main(String[] args) {
         PropertyConfigurator.configure("src/log4j.properties");
-        LOGGER.info("Program has been started.");
+        LOGGER.info("Program has been started. Current dir is "+System.getProperty("user.dir"));
         //new MainScreen().setVisible(true);
         MapEditScreen editScreen = new MapEditScreen();
         editScreen.setVisible(true);

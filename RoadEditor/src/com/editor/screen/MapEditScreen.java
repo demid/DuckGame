@@ -26,6 +26,10 @@ public class MapEditScreen extends JFrame {
     private Map map;
     private JSpinner widthSpinner = new JSpinner(new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, Properties.getInt(Properties.Settings.EDIT_SCREEN_SPINNER_STEP)));
     private JSpinner heightSpinner = new JSpinner(new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, Properties.getInt(Properties.Settings.EDIT_SCREEN_SPINNER_STEP)));
+    private JSpinner gridSizeSpinner = new JSpinner(new SpinnerNumberModel( Properties.getInt(Properties.Settings.EDIT_SCREEN_CELL_SIZE), 1, Integer.MAX_VALUE, Properties.getInt(Properties.Settings.EDIT_SCREEN_SPINNER_STEP)));
+    //==================
+    private JButton crossWayButton = new JButton(Properties.getIcon(Properties.Settings.CROSS_WAY_BUTTON_ICO));
+
     private JCheckBox drawGrid = new JCheckBox(Properties.getLabel(Properties.Labels.DRAW_GRID_TITLE), Properties.getBoolean(Properties.Settings.EDIT_SCREEN_DRAW_GREED));
 
     public MapEditScreen() throws HeadlessException {
@@ -55,7 +59,6 @@ public class MapEditScreen extends JFrame {
     }
 
     private final void initialization() {
-        JPanel toolBar = new JPanel();
 
 
         addWindowListener(new BasicWindowMonitor());
@@ -73,30 +76,8 @@ public class MapEditScreen extends JFrame {
         containerWorkAria.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
         containerWorkAria.setLayout(new GridBagLayout());
         //toolBar initialization
-        toolBar.setLayout(new VerticalBagLayout());
-        toolBar.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
 
-        JPanel widthPanel = new JPanel();
-        widthPanel.setBorder(new TitledBorder(Properties.getLabel(Properties.Labels.WIDTH_SLIDER_TITLE)));
-        widthSpinner.setPreferredSize(new Dimension(Properties.getInt(Properties.Settings.EDIT_SCREEN_SPINNER_WIDTH),
-                Properties.getInt(Properties.Settings.EDIT_SCREEN_SPINNER_HEIGHT)));
-        widthPanel.add(widthSpinner);
-        widthSpinner.addChangeListener(sizeChangeListener);
-        toolBar.add(widthPanel);
-        widthSpinner.setEnabled(false);
 
-        JPanel heightPanel = new JPanel();
-        heightPanel.setBorder(new TitledBorder(Properties.getLabel(Properties.Labels.HEIGHT_SLIDER_TITLE)));
-        heightSpinner.setPreferredSize(new Dimension(Properties.getInt(Properties.Settings.EDIT_SCREEN_SPINNER_WIDTH),
-                Properties.getInt(Properties.Settings.EDIT_SCREEN_SPINNER_HEIGHT)));
-        heightPanel.add(heightSpinner);
-        heightSpinner.setEnabled(false);
-        heightSpinner.addChangeListener(sizeChangeListener);
-        toolBar.add(heightPanel);
-
-        drawGrid.setPreferredSize(new Dimension(Properties.getInt(Properties.Settings.EDIT_SCREEN_SPINNER_WIDTH),
-                Properties.getInt(Properties.Settings.EDIT_SCREEN_SPINNER_HEIGHT)));
-        toolBar.add(drawGrid);
         drawGrid.addChangeListener(drawGridListener);
 
         containerWorkAria.add(workAria);
@@ -104,11 +85,89 @@ public class MapEditScreen extends JFrame {
         JScrollPane jScrollPane = new JScrollPane(containerWorkAria);
         jScrollPane.setBorder(BorderFactory.createEmptyBorder());
         getContentPane().add(jScrollPane, BorderLayout.CENTER);
-        getContentPane().add(toolBar, BorderLayout.EAST);
+        getContentPane().add(addMapObjectsButtons(toolBarInit()), BorderLayout.EAST);
 
 
         LOGGER.trace("Screen has been created.");
     }
+
+
+    private JPanel toolBarInit() {
+        JPanel toolBar = new JPanel();
+        toolBar.setLayout(new VerticalBagLayout());
+        toolBar.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
+
+          widthSpinner.setPreferredSize(new Dimension(Properties.getInt(Properties.Settings.EDIT_SCREEN_SPINNER_WIDTH),
+                Properties.getInt(Properties.Settings.EDIT_SCREEN_SPINNER_HEIGHT)));
+        widthSpinner.addChangeListener(sizeChangeListener);
+        widthSpinner.setEnabled(false);
+
+        JLabel widthSpinnerLabel = new JLabel(Properties.getLabel(Properties.Labels.WIDTH_SLIDER_TITLE));
+        widthSpinnerLabel.setPreferredSize(new Dimension(Properties.getInt(Properties.Settings.EDIT_SCREEN_SPINNER_WIDTH),
+                Properties.getInt(Properties.Settings.EDIT_SCREEN_SPINNER_HEIGHT)));
+
+
+        heightSpinner.setPreferredSize(new Dimension(Properties.getInt(Properties.Settings.EDIT_SCREEN_SPINNER_WIDTH),
+                Properties.getInt(Properties.Settings.EDIT_SCREEN_SPINNER_HEIGHT)));
+        heightSpinner.addChangeListener(sizeChangeListener);
+        heightSpinner.setEnabled(false);
+
+        JLabel heightSpinnerLabel = new JLabel(Properties.getLabel(Properties.Labels.HEIGHT_SLIDER_TITLE));
+        heightSpinnerLabel.setPreferredSize(new Dimension(Properties.getInt(Properties.Settings.EDIT_SCREEN_SPINNER_WIDTH),
+                Properties.getInt(Properties.Settings.EDIT_SCREEN_SPINNER_HEIGHT)));
+
+
+        gridSizeSpinner.setPreferredSize(new Dimension(Properties.getInt(Properties.Settings.EDIT_SCREEN_SPINNER_WIDTH),
+                Properties.getInt(Properties.Settings.EDIT_SCREEN_SPINNER_HEIGHT)));
+        gridSizeSpinner.addChangeListener(gridSizeChangeListener);
+        JLabel gridSizeSpinnerLabel = new JLabel(Properties.getLabel(Properties.Labels.GRID_SIZE_TITLE));
+        gridSizeSpinnerLabel.setPreferredSize(new Dimension(Properties.getInt(Properties.Settings.EDIT_SCREEN_SPINNER_WIDTH),
+                Properties.getInt(Properties.Settings.EDIT_SCREEN_SPINNER_HEIGHT)));
+
+
+        drawGrid.setPreferredSize(new Dimension(Properties.getInt(Properties.Settings.EDIT_SCREEN_SPINNER_WIDTH),
+                Properties.getInt(Properties.Settings.EDIT_SCREEN_SPINNER_HEIGHT)));
+        toolBar.add(drawGrid);
+
+
+
+        JPanel workAriaSettingsPanel = new JPanel();
+        workAriaSettingsPanel.setBorder(new TitledBorder(Properties.getLabel(Properties.Labels.WORK_ARIA_SETTINGS_TITLE)));
+        JPanel innerPanel = new JPanel(new VerticalBagLayout());
+
+
+
+        innerPanel.add(widthSpinnerLabel);
+        innerPanel.add(widthSpinner);
+        innerPanel.add(heightSpinnerLabel);
+        innerPanel.add(heightSpinner);
+        innerPanel.add(gridSizeSpinnerLabel);
+        innerPanel.add(gridSizeSpinner);
+        innerPanel.add(drawGrid);
+
+
+        workAriaSettingsPanel.add(innerPanel);
+        toolBar.add(workAriaSettingsPanel);
+
+        return toolBar;
+    }
+
+    private JPanel addMapObjectsButtons(JPanel toolBar){
+        crossWayButton.setPreferredSize(new Dimension(Properties.getInt(Properties.Settings.MAP_OBJECT_BUTTON_WIDTH),
+                Properties.getInt(Properties.Settings.MAP_OBJECT_BUTTON_HEIGHT)));
+
+        JPanel mapObjectsPanel = new JPanel();
+        mapObjectsPanel.setBorder(new TitledBorder(Properties.getLabel(Properties.Labels.WORK_ARIA_MAP_OBJECTS_TITLE)));
+        JPanel innerPanel = new JPanel(new VerticalBagLayout());
+
+        innerPanel.add(crossWayButton);
+        mapObjectsPanel.add(innerPanel);
+        toolBar.add(mapObjectsPanel);
+        return toolBar;
+    }
+
+
+
 
     public Map getMap() {
         return map;
@@ -119,6 +178,16 @@ public class MapEditScreen extends JFrame {
         public void stateChanged(ChangeEvent e) {
             if (e instanceof ChangeEvent) {
                 workAria.setDrawGrid(drawGrid.isSelected());
+                containerWorkAria.updateUI();
+            }
+        }
+    };
+
+    private ChangeListener gridSizeChangeListener = new ChangeListener() {
+        @Override
+        public void stateChanged(ChangeEvent e) {
+            if (e instanceof ChangeEvent) {
+                workAria.setCellSize((Integer) gridSizeSpinner.getValue());
                 containerWorkAria.updateUI();
             }
         }

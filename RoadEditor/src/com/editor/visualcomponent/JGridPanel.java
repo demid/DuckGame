@@ -42,6 +42,9 @@ public class JGridPanel extends JPanel {
     }
 
     public void setCellSize(int cellSize) {
+        if(cellSize<=0){
+            throw new IllegalArgumentException("'cellSize' should be great than 0.");
+        }
         this.cellSize = cellSize;
     }
 
