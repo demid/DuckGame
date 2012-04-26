@@ -40,7 +40,7 @@ public class App extends BaseExample {
         scene.setBackground(new ColorBackground(0.09804f, 0.6274f, 0.8784f));
         double scale = 100;
 
-        Road r1 = new Road(new Way(Direction.FORWARD),new Way(Direction.FORWARD),new Way(Direction.FORWARD));
+        Road r1 = new Road(new Way(Direction.FORWARD),new Way(Direction.FORWARD));
         Road r2 = new Road(new Way(Direction.FORWARD),new Way(Direction.FORWARD));
         Road r3 = new Road(new Way(Direction.FORWARD),new Way(Direction.FORWARD));
         Road r4 = new Road(new Way(Direction.FORWARD),new Way(Direction.FORWARD));
@@ -58,7 +58,7 @@ public class App extends BaseExample {
         GeographicCrossWay c4 = new GeographicCrossWay(1, 0, -200, Math.PI, scale);
         c4.attachRoad(0, r4, true);
 
-        GeographicCrossWay c = new GeographicCrossWay(4, 0, 0, -Math.PI/5, scale);
+        GeographicCrossWay c = new GeographicCrossWay(4, 0, 0, 0, scale);
         c.attachRoad(2, r1, false);
         c.attachRoad(1, r2, true);
         c.attachRoad(0, r3, true);

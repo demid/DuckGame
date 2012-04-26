@@ -12,7 +12,7 @@ import java.awt.*;
 public class JGridPanel extends JPanel {
     public static final int DEFAULT_CELL_SIZE = 5;
     public static final int DEFAULT_BORDER_CELL_WIDTH = 1;
-    public static final Color DEFAULT_BORDER_CELL_COLOR = Color.BLACK;
+    public static final Color DEFAULT_BORDER_CELL_COLOR = Color.GRAY;
 
 
     private int cellSize = DEFAULT_CELL_SIZE;

@@ -109,8 +109,8 @@ public class GraphFactory {
                     double epX = ((mRadius * crossWay.getScale()) * Math.cos(triangleAngle / 2 + triangleAngle * i)) - dx;
                     double epY = ((mRadius * crossWay.getScale()) * Math.sin(triangleAngle / 2 + triangleAngle * i)) - dy;
                     traceLines.get(i).add(new MathLine(
-                            new Coordinate(spX, spY).rotateAndMove(crossWay.getAngle(), crossWay.getX(), crossWay.getY()),
-                            new Coordinate(epX, epY).rotateAndMove(crossWay.getAngle(), crossWay.getX(), crossWay.getY())));
+                            new Coordinate(spX, spY).rotateAndMove(crossWay.getAngle() - triangleAngle/2, crossWay.getX(), crossWay.getY()),
+                            new Coordinate(epX, epY).rotateAndMove(crossWay.getAngle() - triangleAngle/2, crossWay.getX(), crossWay.getY())));
 
                 }
             }

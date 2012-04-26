@@ -2,7 +2,9 @@ package com.editor.screen;
 
 import com.editor.map.Map;
 import com.editor.res.Properties;
+import com.editor.visualcomponent.JCrossWay;
 import com.editor.visualcomponent.JGridPanel;
+import com.game.roadnetwork.GeographicCrossWay;
 import org.apache.log4j.Logger;
 import sun.awt.VerticalBagLayout;
 
@@ -62,6 +64,7 @@ public class MapEditScreen extends JFrame {
 
 
         addWindowListener(new BasicWindowMonitor());
+
         setExtendedState(Properties.getInt(Properties.Settings.EDIT_SCREEN_SATE));
         setSize(Properties.getInt(Properties.Settings.EDIT_SCREEN_WIDTH), Properties.getInt(Properties.Settings.EDIT_SCREEN_HEIGHT));
         setMinimumSize(new Dimension(Properties.getInt(Properties.Settings.EDIT_SCREEN_MIN_WIDTH),
@@ -80,12 +83,23 @@ public class MapEditScreen extends JFrame {
 
         drawGrid.addChangeListener(drawGridListener);
 
+        workAria.setLayout(null);
+
+        /*JCrossWay jCrossWay = new JCrossWay(6,200,0);
+        jCrossWay.setPosition(10,10);
+
+        workAria.add(jCrossWay);*/
+        JCrossWay crossWay = new JCrossWay(new GeographicCrossWay(6,10,10,0,100));
+        workAria.add(crossWay);
         containerWorkAria.add(workAria);
 
         JScrollPane jScrollPane = new JScrollPane(containerWorkAria);
         jScrollPane.setBorder(BorderFactory.createEmptyBorder());
         getContentPane().add(jScrollPane, BorderLayout.CENTER);
-        getContentPane().add(addMapObjectsButtons(toolBarInit()), BorderLayout.EAST);
+        JPanel panel = new JPanel();
+        panel.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
+        panel.add(addMapObjectsButtons(toolBarInit()));
+        getContentPane().add(panel, BorderLayout.EAST);
 
 
         LOGGER.trace("Screen has been created.");
@@ -95,7 +109,7 @@ public class MapEditScreen extends JFrame {
     private JPanel toolBarInit() {
         JPanel toolBar = new JPanel();
         toolBar.setLayout(new VerticalBagLayout());
-        toolBar.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
+        toolBar.setBorder(BorderFactory.createEmptyBorder());
 
           widthSpinner.setPreferredSize(new Dimension(Properties.getInt(Properties.Settings.EDIT_SCREEN_SPINNER_WIDTH),
                 Properties.getInt(Properties.Settings.EDIT_SCREEN_SPINNER_HEIGHT)));

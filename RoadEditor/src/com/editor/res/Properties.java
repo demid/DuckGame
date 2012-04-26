@@ -1,10 +1,11 @@
 package com.editor.res;
 
+import com.editor.res.exception.IncorrectSettingException;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ResourceBundle;
 
@@ -41,6 +42,8 @@ public class Properties {
     }
 
     public interface Settings {
+        //====== Global visual settings
+        public static final String LOOK_AND_FEEL_CLASS = "LOOK_AND_FEEL_CLASS";
         //====== Main screen
         public static final String MAIN_SCREEN_STATE = "MAIN_SCREEN_STATE";
         public static final String MAIN_SCREEN_WIDTH = "MAIN_SCREEN_WIDTH";
@@ -68,26 +71,68 @@ public class Properties {
         //====== Icons
         public static final String CROSS_WAY_BUTTON_ICO = "CROSS_WAY_BUTTON_ICO";
 
+        //====== Visual setting
+        public static final String WAY_LINE_WIDTH = "WAY_LINE_WIDTH";
+        public static final String WAY_ARROW_WIDTH = "WAY_ARROW_WIDTH";
+        public static final String WAY_ARROW_HEIGHT = "WAY_ARROW_HEIGHT";
+        public static final String WAY_ARROW_COLOR = "WAY_ARROW_COLOR";
+        public static final String WAY_ARROW_ACTIVE_COLOR = "WAY_ARROW_ACTIVE_COLOR";
+        public static final String WAY_CONNECTOR_SIZE = "WAY_CONNECTOR_SIZE";
+
+    }
+
+    public static Color getColor(String name) {
+        LOGGER.trace("Trying to get color : " + name);
+        String[] strings = PROPERTIES.getProperty(name).split(" ");
+        if (strings.length != 3) {
+            throw new IncorrectSettingException("Can't get color for " + name + ". Wrong color format.");
+        }
+        try {
+            return new Color(Integer.parseInt(strings[0]), Integer.parseInt(strings[1]), Integer.parseInt(strings[2]));
+        } catch (RuntimeException e) {
+            throw new IncorrectSettingException("Can't get color for " + name, e);
+        }
     }
 
     public static Icon getIcon(String name) {
-        LOGGER.trace("Trying to get icon : " + name);
-        ImageIcon icon = new ImageIcon(PROPERTIES.getProperty(name));
-        return icon;
+        try {
+
+            LOGGER.trace("Trying to get icon : " + name);
+            ImageIcon icon = new ImageIcon(PROPERTIES.getProperty(name));
+            return icon;
+        } catch (RuntimeException e) {
+            throw new IncorrectSettingException("Can't get icon for " + name, e);
+        }
     }
 
     public static String getLabel(String name) {
+
         LOGGER.trace("Trying to get label : " + name);
         return LABELS.getString(name);
+
+
+    }
+
+    public static String getString(String name) {
+        LOGGER.trace("Trying to get string : " + name);
+        return PROPERTIES.getProperty(name);
     }
 
     public static int getInt(String name) {
-        LOGGER.trace("Trying to get int : " + name);
-        return Integer.parseInt(PROPERTIES.getProperty(name));
+        try {
+            LOGGER.trace("Trying to get int : " + name);
+            return Integer.parseInt(PROPERTIES.getProperty(name));
+        } catch (RuntimeException e) {
+            throw new IncorrectSettingException("Can't get int for " + name, e);
+        }
     }
 
     public static boolean getBoolean(String name) {
-        LOGGER.trace("Trying to get boolean : " + name);
-        return Boolean.parseBoolean(PROPERTIES.getProperty(name));
+        try {
+            LOGGER.trace("Trying to get boolean : " + name);
+            return Boolean.parseBoolean(PROPERTIES.getProperty(name));
+        } catch (RuntimeException e) {
+            throw new IncorrectSettingException("Can't get boolean for " + name, e);
+        }
     }
 }
