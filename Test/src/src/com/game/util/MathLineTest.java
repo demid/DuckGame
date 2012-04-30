@@ -15,9 +15,13 @@ public class MathLineTest extends TestCase {
     }
 
     public void testIsOnLine() throws Exception {
+        MathLine line;
+        Coordinate coordinate = new Coordinate(10,0);
+        line = new MathLine(new Coordinate(10,10),new Coordinate(10,-10));
+        assertTrue(line.isOnLine(coordinate));
 
-        MathLine line = new MathLine(new Coordinate(0, 0), new Coordinate(5, 0));
-        Coordinate coordinate = new Coordinate(1, 0);
+        line = new MathLine(new Coordinate(0, 0), new Coordinate(5, 0));
+        coordinate = new Coordinate(1, 0);
         assertTrue(line.isOnLine(coordinate));
 
 

@@ -21,6 +21,9 @@ public class CrossWay {
     private int roadsInCrossWay;
 
     public CrossWay(int maxPlaces) {
+        if(maxPlaces <=0){
+            throw new IllegalArgumentException("'maxPlaces'  should be great than 0.");
+        }
         roads = new RoadEntry[maxPlaces];
     }
 
@@ -112,7 +115,7 @@ public class CrossWay {
     }
 
 
-    public static class RoadEntry {
+    private static class RoadEntry {
         private Road road;
         private boolean myBegin;
 

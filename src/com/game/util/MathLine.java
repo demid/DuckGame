@@ -114,7 +114,7 @@ public class MathLine {
         }
         // return the valid intersection
         if (Double.isNaN(pt.getX()) || Double.isNaN(pt.getY())) {
-            throw new ArithmeticException("Intersection of " + this + " and " + line + " is " + pt + ". Angle between lines is "+df+". Check Coordinate.MAX_DELTA");
+            throw new ArithmeticException("Intersection of " + this + " and " + line + " is " + pt + ". Angle between lines is " + df + ". Check Coordinate.MAX_DELTA");
         }
         return pt;
     }
@@ -128,19 +128,36 @@ public class MathLine {
             throw new IllegalArgumentException(new NullPointerException("'coordinate' can't be null."));
         }
         double y = calculateY(coordinate.getX());
-        if (Math.abs(y - coordinate.getY()) > Coordinate.MAX_DELTA) {
+        double x = calculateX(coordinate.getY());
+        if (!Double.isNaN(y)) {
+            if (Math.abs(y - coordinate.getY()) > Coordinate.MAX_DELTA) {
+                return false;
+            }
+            if (checkBounds) {
+                if ((getStart().getY() <= y) && (getEnd().getY() >= y)) {
+                    return true;
+                } else if ((getStart().getY() >= y) && (getEnd().getY() <= y)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            return true;
+        }
+        if (Math.abs(x - coordinate.getX()) > Coordinate.MAX_DELTA) {
             return false;
         }
         if (checkBounds) {
-            if ((getStart().getY() <= y) && (getEnd().getY() >= y)) {
+            if ((getStart().getX() <= x) && (getEnd().getX() >= x)) {
                 return true;
-            } else if ((getStart().getY() >= y) && (getEnd().getY() <= y)) {
+            } else if ((getStart().getX() >= x) && (getEnd().getX() <= x)) {
                 return true;
             } else {
                 return false;
             }
         }
         return true;
+
     }
 
 

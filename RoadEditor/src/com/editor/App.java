@@ -2,7 +2,7 @@ package com.editor;
 
 import com.editor.map.Map;
 import com.editor.res.Properties;
-import com.editor.screen.MapEditScreen;
+import com.editor.screen.JMapEditScreen;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
@@ -33,9 +33,9 @@ public class App {
             LOGGER.error(e);
         }
 
-        MapEditScreen editScreen = new MapEditScreen();
-        editScreen.setVisible(true);
-        editScreen.loadMap(new Map(300, 300));
+        JMapEditScreen editScreenJ = new JMapEditScreen();
+        editScreenJ.setVisible(true);
+        editScreenJ.loadMap(new Map(600, 600));
 
     }
 

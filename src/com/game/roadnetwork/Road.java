@@ -73,4 +73,6 @@ public class Road {
     void setEnd(CrossWay end) {
         this.end = end;
     }
+
+
 }

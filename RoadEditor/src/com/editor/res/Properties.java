@@ -78,6 +78,7 @@ public class Properties {
         public static final String WAY_ARROW_COLOR = "WAY_ARROW_COLOR";
         public static final String WAY_ARROW_ACTIVE_COLOR = "WAY_ARROW_ACTIVE_COLOR";
         public static final String WAY_CONNECTOR_SIZE = "WAY_CONNECTOR_SIZE";
+        public static final String SELECTION_POLYGON_WIDTH = "SELECTION_POLYGON_WIDTH";
 
     }
 

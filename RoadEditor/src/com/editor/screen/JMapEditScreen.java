@@ -4,7 +4,9 @@ import com.editor.map.Map;
 import com.editor.res.Properties;
 import com.editor.visualcomponent.JCrossWay;
 import com.editor.visualcomponent.JGridPanel;
-import com.game.roadnetwork.GeographicCrossWay;
+import com.editor.visualcomponent.JRoad;
+import com.game.roadnetwork.Direction;
+import com.game.roadnetwork.Way;
 import org.apache.log4j.Logger;
 import sun.awt.VerticalBagLayout;
 
@@ -21,8 +23,8 @@ import java.awt.*;
  *
  * @author: Alexey
  */
-public class MapEditScreen extends JFrame {
-    private final static Logger LOGGER = Logger.getLogger(MapEditScreen.class);
+public class JMapEditScreen extends JFrame {
+    private final static Logger LOGGER = Logger.getLogger(JMapEditScreen.class);
     private JGridPanel workAria = new JGridPanel();
     private JPanel containerWorkAria = new JPanel();
     private Map map;
@@ -34,21 +36,21 @@ public class MapEditScreen extends JFrame {
 
     private JCheckBox drawGrid = new JCheckBox(Properties.getLabel(Properties.Labels.DRAW_GRID_TITLE), Properties.getBoolean(Properties.Settings.EDIT_SCREEN_DRAW_GREED));
 
-    public MapEditScreen() throws HeadlessException {
+    public JMapEditScreen() throws HeadlessException {
         initialization();
     }
 
-    public MapEditScreen(GraphicsConfiguration gc) {
+    public JMapEditScreen(GraphicsConfiguration gc) {
         super(gc);
         initialization();
     }
 
-    public MapEditScreen(String title) throws HeadlessException {
+    public JMapEditScreen(String title) throws HeadlessException {
         super(title);
         initialization();
     }
 
-    public MapEditScreen(String title, GraphicsConfiguration gc) {
+    public JMapEditScreen(String title, GraphicsConfiguration gc) {
         super(title, gc);
         initialization();
     }
@@ -89,8 +91,34 @@ public class MapEditScreen extends JFrame {
         jCrossWay.setPosition(10,10);
 
         workAria.add(jCrossWay);*/
-        JCrossWay crossWay = new JCrossWay(new GeographicCrossWay(6,10,10,0,100));
-        workAria.add(crossWay);
+
+        JRoad r1 = new JRoad(new Way(Direction.FORWARD),new Way(Direction.FORWARD),new Way(Direction.FORWARD),new Way(Direction.FORWARD));
+        JRoad r2 = new JRoad(new Way(Direction.FORWARD),new Way(Direction.FORWARD));
+
+
+        JCrossWay c1 = new JCrossWay(3,0,50);
+        c1.setPosition(10,10);
+        c1.attachRoad(0,r1,true);
+
+
+        JCrossWay c2 = new JCrossWay(3,0,50);
+        c2.setPosition(100,100);
+        c2.attachRoad(1,r1,false);
+        c2.attachRoad(2,r2,true);
+
+
+        JCrossWay c3 = new JCrossWay(3,0,50);
+        c3.setPosition(400,20);
+        c3.attachRoad(1,r2,false);
+
+
+        workAria.add(c1);
+        workAria.add(c2);
+        workAria.add(c3);
+
+        workAria.add(r1);
+        workAria.add(r2);
+
         containerWorkAria.add(workAria);
 
         JScrollPane jScrollPane = new JScrollPane(containerWorkAria);
