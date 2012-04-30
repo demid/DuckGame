@@ -31,6 +31,9 @@ public class GeographicCrossWay extends CrossWay {
 
     public GeographicCrossWay(int maxPlaces, double x, double y, double angle, double scale) {
         super(maxPlaces);
+        if (scale < 0) {
+            throw new IllegalArgumentException("'scale' can't be negative.");
+        }
         this.x = x;
         this.y = y;
         this.angle = angle;
