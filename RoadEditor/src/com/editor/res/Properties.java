@@ -41,6 +41,8 @@ public class Properties {
         public static final String WORK_ARIA_MAP_OBJECTS_TITLE = "WORK_ARIA_MAP_OBJECTS_TITLE";
         public static final String SCALE_LABEL = "SCALE_LABEL";
         public static final String ANGLE_LABEL = "ANGLE_LABEL";
+        public static final String OK_BUTTON_LABEL="OK_BUTTON_LABEL";
+        public static final String CANCEL_BUTTON_LABEL="CANCEL_BUTTON_LABEL";
     }
 
     public interface Settings {
