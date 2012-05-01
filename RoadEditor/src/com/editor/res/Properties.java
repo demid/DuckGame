@@ -39,6 +39,8 @@ public class Properties {
         public static final String GRID_SIZE_TITLE = "GRID_SIZE_TITLE";
         public static final String WORK_ARIA_SETTINGS_TITLE = "WORK_ARIA_SETTINGS_TITLE";
         public static final String WORK_ARIA_MAP_OBJECTS_TITLE = "WORK_ARIA_MAP_OBJECTS_TITLE";
+        public static final String SCALE_LABEL = "SCALE_LABEL";
+        public static final String ANGLE_LABEL = "ANGLE_LABEL";
     }
 
     public interface Settings {
@@ -79,6 +81,10 @@ public class Properties {
         public static final String WAY_ARROW_ACTIVE_COLOR = "WAY_ARROW_ACTIVE_COLOR";
         public static final String WAY_CONNECTOR_SIZE = "WAY_CONNECTOR_SIZE";
         public static final String SELECTION_POLYGON_WIDTH = "SELECTION_POLYGON_WIDTH";
+        //====== Dialog settings
+        public static final String DIALOG_SPINNER_STEP ="DIALOG_SPINNER_STEP";
+        public static final String DIALOG_WIDTH = "DIALOG_WIDTH";
+        public static final String DIALOG_HEIGHT = "DIALOG_HEIGHT";
 
     }
 
@@ -127,6 +133,16 @@ public class Properties {
             throw new IncorrectSettingException("Can't get int for " + name, e);
         }
     }
+
+    public static double getDouble(String name) {
+        try {
+            LOGGER.trace("Trying to get double : " + name);
+            return Double.parseDouble(PROPERTIES.getProperty(name));
+        } catch (RuntimeException e) {
+            throw new IncorrectSettingException("Can't get double for " + name, e);
+        }
+    }
+
 
     public static boolean getBoolean(String name) {
         try {
