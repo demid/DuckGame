@@ -308,7 +308,7 @@ public class JCrossWay extends JComponent implements WorkComponent {
 
     @Override
     public boolean mouseClicked(MouseEvent e) {
-        if (selectionPolygon.isNear(new Coordinate(e.getX(), e.getY()), selectionPolygonWidth)) {
+        if (onLine) {
             selected = !selected;
             ComponentContainer container = getComponentContainer();
             if (container != null) {
