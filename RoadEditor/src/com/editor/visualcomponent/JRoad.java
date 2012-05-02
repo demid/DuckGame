@@ -108,6 +108,8 @@ public class JRoad extends JComponent {
 
     @Override
     protected void paintComponent(Graphics g) {
+        //TODO Change design
+        ((Graphics2D)g).setStroke(new BasicStroke(2));
         for (WayEntry wayEntry : waysList) {
             if ((wayEntry.getStart() != null) && (wayEntry.getEnd() != null)) {
                 g.drawLine(wayEntry.getStart().x - getX(), wayEntry.getStart().y - getY(), wayEntry.getEnd().x- getX(), wayEntry.getEnd().y - getY());

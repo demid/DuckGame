@@ -16,6 +16,9 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 /**
  * Date: 24.04.12
@@ -25,6 +28,8 @@ import java.awt.*;
  */
 public class JMapEditScreen extends JFrame {
     private final static Logger LOGGER = Logger.getLogger(JMapEditScreen.class);
+
+
     private JGridPanel workAria = new JGridPanel();
     private JPanel containerWorkAria = new JPanel();
     private Map map;
@@ -33,8 +38,10 @@ public class JMapEditScreen extends JFrame {
     private JSpinner gridSizeSpinner = new JSpinner(new SpinnerNumberModel( Properties.getInt(Properties.Settings.EDIT_SCREEN_CELL_SIZE), 1, Integer.MAX_VALUE, Properties.getInt(Properties.Settings.EDIT_SCREEN_SPINNER_STEP)));
     //==================
     private JButton crossWayButton = new JButton(Properties.getIcon(Properties.Settings.CROSS_WAY_BUTTON_ICO));
-
     private JCheckBox drawGrid = new JCheckBox(Properties.getLabel(Properties.Labels.DRAW_GRID_TITLE), Properties.getBoolean(Properties.Settings.EDIT_SCREEN_DRAW_GREED));
+    //==================
+
+
 
     public JMapEditScreen() throws HeadlessException {
         initialization();
@@ -83,7 +90,8 @@ public class JMapEditScreen extends JFrame {
         //toolBar initialization
 
 
-        drawGrid.addChangeListener(drawGridListener);
+
+        drawGrid.addActionListener(drawGridListener);
 
         workAria.setLayout(null);
 
@@ -215,13 +223,13 @@ public class JMapEditScreen extends JFrame {
         return map;
     }
 
-    private ChangeListener drawGridListener = new ChangeListener() {
+    private ActionListener drawGridListener = new ActionListener() {
+
+
         @Override
-        public void stateChanged(ChangeEvent e) {
-            if (e instanceof ChangeEvent) {
-                workAria.setDrawGrid(drawGrid.isSelected());
-                containerWorkAria.updateUI();
-            }
+        public void actionPerformed(ActionEvent e) {
+            workAria.setDrawGrid(drawGrid.isSelected());
+            containerWorkAria.updateUI();
         }
     };
 
@@ -254,13 +262,16 @@ public class JMapEditScreen extends JFrame {
 
     public void loadMap(Map map) {
         setAndCheckMap(map);
-        workAria.setPreferredSize(new Dimension(map.getWidth(), map.getHeight()));
-        workAria.setMinimumSize(new Dimension(map.getWidth(), map.getHeight()));
-
+        //workAria.setPreferredSize(new Dimension(map.getWidth(), map.getHeight()));
+        //workAria.setMinimumSize(new Dimension(map.getWidth(), map.getHeight()));
+        workAria.setSize(new Dimension(map.getWidth(), map.getHeight()));
         containerWorkAria.updateUI();
         heightSpinner.setValue(map.getHeight());
         heightSpinner.setEnabled(true);
         widthSpinner.setValue(map.getWidth());
         widthSpinner.setEnabled(true);
     }
+
+
+
 }

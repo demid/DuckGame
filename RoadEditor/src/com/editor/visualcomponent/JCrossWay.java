@@ -1,13 +1,15 @@
 package com.editor.visualcomponent;
 
 import com.editor.res.Properties;
+import com.editor.screen.ComponentContainer;
+import com.editor.screen.WorkComponent;
+import com.editor.screen.dialog.JCrossWayDialog;
 import com.game.util.Coordinate;
 import com.game.util.MathPolygon;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,7 +21,7 @@ import java.util.List;
  *
  * @author: Alexey
  */
-public class JCrossWay extends JComponent {
+public class JCrossWay extends JComponent implements WorkComponent {
     private final static Logger LOGGER = Logger.getLogger(JCrossWay.class);
     private double angle;
     private double scale;
@@ -40,6 +42,20 @@ public class JCrossWay extends JComponent {
     private MathPolygon selectionPolygon;
 
     //==================================
+    private ComponentContainer componentContainer;
+
+    public ComponentContainer getComponentContainer() {
+        return componentContainer;
+    }
+
+    public void setComponentContainer(ComponentContainer componentContainer) {
+        this.componentContainer = componentContainer;
+    }
+
+    @Override
+    public JComponent getComponent() {
+        return this;
+    }
 
     public JCrossWay(int maxPlaces, double angle, double scale) {
         if (maxPlaces < 1) {
@@ -55,9 +71,7 @@ public class JCrossWay extends JComponent {
             triangleAngle = Math.PI;
         }
         updateState(true);
-        setOpaque(true);
-        addMouseMotionListener(mouseAdapter);
-        addMouseListener(mouseAdapter);
+        setOpaque(false);
     }
 
     public void setAngle(double angle) {
@@ -273,40 +287,81 @@ public class JCrossWay extends JComponent {
         return roadEntry.isMyBegin();
     }
 
-    MouseAdapter mouseAdapter = new MouseAdapter() {
-        private Point point = null;
-        private boolean onLine;
 
-        @Override
-        public void mousePressed(MouseEvent e) {
-            onLine = selectionPolygon.isNear(new Coordinate(e.getX(), e.getY()), selectionPolygonWidth);
+    private boolean onLine = false;
+    private Point point;
+
+
+    public boolean doubleClicked(MouseEvent e) {
+        if(onLine){
+            //TODO add to config file
+            JCrossWayDialog dialog = new JCrossWayDialog("",angle,scale);
+            if(dialog.showDialog()){
+                setScale(dialog.getScale());
+                setAngle(dialog.getAngle());
+            }
+            return false;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean mouseClicked(MouseEvent e) {
+        if (selectionPolygon.isNear(new Coordinate(e.getX(), e.getY()), selectionPolygonWidth)) {
+            selected = !selected;
+            ComponentContainer container = getComponentContainer();
+            if (container != null) {
+                if (selected) {
+                    container.addToSelected(this);
+                } else {
+                    container.removeFromSelected(this);
+                }
+            }
+            repaint();
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean mousePressed(MouseEvent e) {
+        onLine = selectionPolygon.isNear(new Coordinate(e.getX(), e.getY()), selectionPolygonWidth);
+        if (onLine) {
             point = e.getPoint();
-            LOGGER.trace("mousePressed : " + e.getPoint());
-
+            return true;
         }
+        return false;
+    }
 
-        @Override
-        public void mouseReleased(MouseEvent e) {
-            LOGGER.trace("mouseReleased : " + e.getPoint());
-        }
+    @Override
+    public boolean mouseReleased(MouseEvent e) {
+        return false;
+    }
 
-        @Override
-        public void mouseClicked(MouseEvent e) {
-            if (selectionPolygon.isNear(new Coordinate(e.getX(), e.getY()), selectionPolygonWidth)) {
-                selected = !selected;
-                LOGGER.trace("Selected : " + selected);
-                getParent().repaint();
-            }
-        }
+    @Override
+    public boolean mouseEntered(MouseEvent e) {
+        return false;
+    }
 
-        @Override
-        public void mouseDragged(MouseEvent e) {
-            if (onLine) {
-                setPosition((int) (getX() + e.getX() - point.getX()), (int) (getY() + e.getY() - point.getY()));
-            }
-            LOGGER.trace("mouseDragged : " + e.getPoint());
+    @Override
+    public boolean mouseExited(MouseEvent e) {
+        return false;
+    }
+
+    @Override
+    public boolean mouseDragged(MouseEvent e) {
+        if (onLine) {
+            setPosition((int) (getX() + e.getX() - point.getX()), (int) (getY() + e.getY() - point.getY()));
+            return true;
         }
-    };
+        return false;
+    }
+
+    @Override
+    public boolean mouseMoved(MouseEvent e) {
+        return false;
+    }
+
 
     private static class RoadEntry {
         private JRoad road;

@@ -1,14 +1,15 @@
 package com.editor.screen;
 
+import javax.swing.*;
+
 /**
- * Date: 30.04.12
- * Time: 14:54
+ * Date: 02.05.12
+ * Time: 12:09
  *
  * @author: Alexey
  */
 public interface ComponentContainer {
-    public void addToSelected(CommandExecutor commandExecutor);
-
-    public void removeFromSelected(CommandExecutor commandExecutor);
+    public void addToSelected(JComponent jComponent);
+    public void removeFromSelected(JComponent jComponent);
 
 }
