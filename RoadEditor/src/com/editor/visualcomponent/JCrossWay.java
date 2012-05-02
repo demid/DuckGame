@@ -2,6 +2,7 @@ package com.editor.visualcomponent;
 
 import com.editor.res.Properties;
 import com.editor.screen.ComponentContainer;
+import com.editor.screen.CrossWayContainer;
 import com.editor.screen.WorkComponent;
 import com.editor.screen.dialog.JCrossWayDialog;
 import com.game.util.Coordinate;
@@ -11,8 +12,7 @@ import org.apache.log4j.Logger;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.*;
 import java.util.List;
 
 /**
@@ -40,9 +40,38 @@ public class JCrossWay extends JComponent implements WorkComponent {
 
     private boolean selected = false;
     private MathPolygon selectionPolygon;
-
+    private Map<Integer, Rectangle> activeConnectors = new HashMap<Integer, Rectangle>();
     //==================================
     private ComponentContainer componentContainer;
+
+
+    private int activeConnector = -1;
+
+    private void setActiveConnector(int connector) {
+        if (connector >= roads.length) {
+            throw new IllegalArgumentException("'connector' number can't be great than connectors number.");
+        }
+        if (this.getParent() instanceof CrossWayContainer) {
+            CrossWayContainer crossWayContainer = (CrossWayContainer) this.getParent();
+            if (connector >= 0) {
+                if (activeConnector != connector) {
+                    crossWayContainer.crossWayActivated(this, connector);
+                }
+            } else {
+                if (activeConnector != -1) {
+                    crossWayContainer.crossWayDeactivated(this);
+                }
+            }
+        }
+        activeConnector = connector;
+        repaint();
+    }
+
+
+    private int getActiveConnector() {
+        return activeConnector;
+    }
+
 
     public ComponentContainer getComponentContainer() {
         return componentContainer;
@@ -90,6 +119,14 @@ public class JCrossWay extends JComponent implements WorkComponent {
 
     public void setSelected(boolean selected) {
         this.selected = selected;
+        ComponentContainer container = getComponentContainer();
+        if (container != null) {
+            if (selected) {
+                container.addToSelected(this);
+            } else {
+                container.removeFromSelected(this);
+            }
+        }
     }
 
     public int getPlacesCount() {
@@ -167,12 +204,20 @@ public class JCrossWay extends JComponent implements WorkComponent {
 
 
     private void drawConnectionPlace(Graphics2D g, int pNumber, double startX, double startY, double endX, double endY) {
+        //TODO add to properties file
         Color c = g.getColor();
-        g.setColor(Color.LIGHT_GRAY);
         JRoad road = getRoad(pNumber);
         double waysNumber = 1;
         if (road != null) {
+            g.setColor(Color.LIGHT_GRAY);
             waysNumber = road.getWaysNumber();
+        } else {
+            if (pNumber == getActiveConnector()) {
+                g.setColor(Color.RED);
+            } else {
+                g.setColor(Color.ORANGE);
+            }
+
         }
         double dx = (endX - startX) / maxWays;
         double dy = (endY - startY) / maxWays;
@@ -185,18 +230,18 @@ public class JCrossWay extends JComponent implements WorkComponent {
 
     @Override
     protected void paintComponent(Graphics g) {
-        g.setColor(Color.DARK_GRAY);
         //TODO add to properties file
+        g.setColor(Color.DARK_GRAY);
         Stroke baseStroke = new BasicStroke(2, BasicStroke.CAP_ROUND, BasicStroke.JOIN_BEVEL, 0, new float[]{9}, 0);
         Stroke selectedStroke = new BasicStroke(4, BasicStroke.CAP_ROUND, BasicStroke.JOIN_BEVEL, 0, new float[]{9}, 0);
 
 
         //g.drawRect(0,0,(int)size,(int)size);
         for (int i = 0; i < getPlacesCount(); i++) {
-            double startX = (catet * scale * Math.cos(triangleAngle * i+ angle + triangleAngle / 2)) + size / 2;
-            double startY = (catet * scale * Math.sin(triangleAngle * i+ angle + triangleAngle / 2)) + size / 2;
-            double endX = (catet * scale * Math.cos(triangleAngle * (i + 1)+ angle + triangleAngle / 2)) + size / 2;
-            double endY = (catet * scale * Math.sin(triangleAngle * (i + 1)+ angle + triangleAngle / 2)) + size / 2;
+            double startX = (catet * scale * Math.cos(triangleAngle * i + angle + triangleAngle / 2)) + size / 2;
+            double startY = (catet * scale * Math.sin(triangleAngle * i + angle + triangleAngle / 2)) + size / 2;
+            double endX = (catet * scale * Math.cos(triangleAngle * (i + 1) + angle + triangleAngle / 2)) + size / 2;
+            double endY = (catet * scale * Math.sin(triangleAngle * (i + 1) + angle + triangleAngle / 2)) + size / 2;
             if (selected) {
                 ((Graphics2D) g).setStroke(selectedStroke);
             } else {
@@ -238,11 +283,12 @@ public class JCrossWay extends JComponent implements WorkComponent {
         size = catet * 2 * scale;
 
         Coordinate[] coordinates = new Coordinate[getPlacesCount()];
+        activeConnectors.clear();
         for (int i = 0; i < getPlacesCount(); i++) {
-            double startX = (catet * scale * Math.cos(triangleAngle * i+ angle + triangleAngle / 2)) + size / 2;
-            double startY = (catet * scale * Math.sin(triangleAngle * i+ angle + triangleAngle / 2)) + size / 2;
-            double endX = (catet * scale * Math.cos(triangleAngle * (i + 1)+ angle + triangleAngle / 2)) + size / 2;
-            double endY = (catet * scale * Math.sin(triangleAngle * (i + 1)+ angle + triangleAngle / 2)) + size / 2;
+            double startX = (catet * scale * Math.cos(triangleAngle * i + angle + triangleAngle / 2)) + size / 2;
+            double startY = (catet * scale * Math.sin(triangleAngle * i + angle + triangleAngle / 2)) + size / 2;
+            double endX = (catet * scale * Math.cos(triangleAngle * (i + 1) + angle + triangleAngle / 2)) + size / 2;
+            double endY = (catet * scale * Math.sin(triangleAngle * (i + 1) + angle + triangleAngle / 2)) + size / 2;
             coordinates[i] = new Coordinate(startX, startY);
             JRoad road = getRoad(i);
             if (road != null) {
@@ -265,11 +311,22 @@ public class JCrossWay extends JComponent implements WorkComponent {
                         wayEntries.get(j - offs).setEnd(point);
                     }
                 }
-
                 road.update(wayEntries);
+            } else {
+                double waysNumber = 1;
+
+                double dx = (endX - startX) / maxWays;
+                double dy = (endY - startY) / maxWays;
+                int offs = (int) ((maxWays - waysNumber) / 2);
+                for (int j = offs; (j - offs) < waysNumber; j++) {
+                    int sX = (int) (startX + (j * dx) + (dx / 2));
+                    int sY = (int) (startY + (j * dy) + (dy / 2));
+                    activeConnectors.put(i, new Rectangle(sX - connectorSize / 2, sY - connectorSize / 2, connectorSize, connectorSize));
+                }
 
             }
         }
+
         selectionPolygon = new MathPolygon(coordinates);
         if (updatePosition) {
             setBounds(getX(), getY(), (int) size, (int) size);
@@ -294,10 +351,10 @@ public class JCrossWay extends JComponent implements WorkComponent {
 
     @Override
     public boolean doubleClicked(MouseEvent e) {
-        if(onLine){
+        if (onLine) {
             //TODO add to config file
-            JCrossWayDialog dialog = new JCrossWayDialog("",angle,scale);
-            if(dialog.showDialog()){
+            JCrossWayDialog dialog = new JCrossWayDialog("", angle, scale);
+            if (dialog.showDialog()) {
                 setScale(dialog.getScale());
                 setAngle(dialog.getAngle());
             }
@@ -308,16 +365,19 @@ public class JCrossWay extends JComponent implements WorkComponent {
 
     @Override
     public boolean mouseClicked(MouseEvent e) {
-        if (onLine) {
-            selected = !selected;
-            ComponentContainer container = getComponentContainer();
-            if (container != null) {
-                if (selected) {
-                    container.addToSelected(this);
+        for (Map.Entry<Integer, Rectangle> entry : activeConnectors.entrySet()) {
+            if (entry.getValue().contains(e.getPoint())) {
+                if (getActiveConnector() == entry.getKey()) {
+                    setActiveConnector(-1);
                 } else {
-                    container.removeFromSelected(this);
+                    setActiveConnector(-1);
+                    setActiveConnector(entry.getKey());
                 }
+                return true;
             }
+        }
+        if (onLine) {
+            setSelected(!isSelected());
             repaint();
             return true;
         }

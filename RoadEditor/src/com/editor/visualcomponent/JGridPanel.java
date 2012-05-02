@@ -1,6 +1,7 @@
 package com.editor.visualcomponent;
 
 import com.editor.screen.ComponentContainer;
+import com.editor.screen.CrossWayContainer;
 import com.editor.screen.WorkComponent;
 import org.apache.log4j.Logger;
 
@@ -18,7 +19,7 @@ import java.util.LinkedList;
  *
  * @author: Alexey
  */
-public class JGridPanel extends JPanel implements ComponentContainer {
+public class JGridPanel extends JPanel implements ComponentContainer,CrossWayContainer {
     private final static Logger LOGGER = Logger.getLogger(JGridPanel.class);
     //TODO add to config file
     public static final int DEFAULT_CELL_SIZE = 5;
@@ -113,6 +114,16 @@ public class JGridPanel extends JPanel implements ComponentContainer {
     @Override
     public void removeFromSelected(JComponent jComponent) {
         //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void crossWayActivated(JCrossWay jCrossWay, int place) {
+     LOGGER.trace("Activated "+jCrossWay + " "+place);
+    }
+
+    @Override
+    public void crossWayDeactivated(JCrossWay jCrossWay) {
+        LOGGER.trace("Deactivated "+jCrossWay);
     }
 
     private class JGlassComponent extends JComponent implements MouseListener, MouseMotionListener {
