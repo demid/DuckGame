@@ -193,10 +193,10 @@ public class JCrossWay extends JComponent implements WorkComponent {
 
         //g.drawRect(0,0,(int)size,(int)size);
         for (int i = 0; i < getPlacesCount(); i++) {
-            double startX = (catet * scale * Math.cos(triangleAngle * i + triangleAngle / 2)) + size / 2;
-            double startY = (catet * scale * Math.sin(triangleAngle * i + triangleAngle / 2)) + size / 2;
-            double endX = (catet * scale * Math.cos(triangleAngle * (i + 1) + triangleAngle / 2)) + size / 2;
-            double endY = (catet * scale * Math.sin(triangleAngle * (i + 1) + triangleAngle / 2)) + size / 2;
+            double startX = (catet * scale * Math.cos(triangleAngle * i+ angle + triangleAngle / 2)) + size / 2;
+            double startY = (catet * scale * Math.sin(triangleAngle * i+ angle + triangleAngle / 2)) + size / 2;
+            double endX = (catet * scale * Math.cos(triangleAngle * (i + 1)+ angle + triangleAngle / 2)) + size / 2;
+            double endY = (catet * scale * Math.sin(triangleAngle * (i + 1)+ angle + triangleAngle / 2)) + size / 2;
             if (selected) {
                 ((Graphics2D) g).setStroke(selectedStroke);
             } else {
@@ -239,10 +239,10 @@ public class JCrossWay extends JComponent implements WorkComponent {
 
         Coordinate[] coordinates = new Coordinate[getPlacesCount()];
         for (int i = 0; i < getPlacesCount(); i++) {
-            double startX = (catet * scale * Math.cos(triangleAngle * i + triangleAngle / 2)) + size / 2;
-            double startY = (catet * scale * Math.sin(triangleAngle * i + triangleAngle / 2)) + size / 2;
-            double endX = (catet * scale * Math.cos(triangleAngle * (i + 1) + triangleAngle / 2)) + size / 2;
-            double endY = (catet * scale * Math.sin(triangleAngle * (i + 1) + triangleAngle / 2)) + size / 2;
+            double startX = (catet * scale * Math.cos(triangleAngle * i+ angle + triangleAngle / 2)) + size / 2;
+            double startY = (catet * scale * Math.sin(triangleAngle * i+ angle + triangleAngle / 2)) + size / 2;
+            double endX = (catet * scale * Math.cos(triangleAngle * (i + 1)+ angle + triangleAngle / 2)) + size / 2;
+            double endY = (catet * scale * Math.sin(triangleAngle * (i + 1)+ angle + triangleAngle / 2)) + size / 2;
             coordinates[i] = new Coordinate(startX, startY);
             JRoad road = getRoad(i);
             if (road != null) {
@@ -274,6 +274,7 @@ public class JCrossWay extends JComponent implements WorkComponent {
         if (updatePosition) {
             setBounds(getX(), getY(), (int) size, (int) size);
         }
+        repaint();
     }
 
     public boolean beginOfRoadIn(int place) {
@@ -291,7 +292,7 @@ public class JCrossWay extends JComponent implements WorkComponent {
     private boolean onLine = false;
     private Point point;
 
-
+    @Override
     public boolean doubleClicked(MouseEvent e) {
         if(onLine){
             //TODO add to config file
