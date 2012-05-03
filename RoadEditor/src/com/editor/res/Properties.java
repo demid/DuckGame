@@ -47,6 +47,14 @@ public class Properties {
         //com.editor.screen.dialog.JCrossWayDialog
         public static final String JCW_DIALOG_SCALE_LABEL = "JCW_DIALOG_SCALE_LABEL";
         public static final String JCW_DIALOG_ANGLE_LABEL = "JCW_DIALOG_ANGLE_LABEL";
+
+
+        //com.editor.screen.dialog.JCrossWayCreateDialog
+        public static final String JCW_CREATE_DIALOG_ROAD_NUMBER_LABEL = "JCW_CREATE_DIALOG_ROAD_NUMBER_LABEL";
+        public static final String JCW_CREATE_DIALOG_POSITION_LABEL = "JCW_CREATE_DIALOG_POSITION_LABEL";
+        public static final String JCW_CREATE_DIALOG_SCALE_LABEL = "JCW_CREATE_DIALOG_SCALE_LABEL";
+        public static final String JCW_CREATE_DIALOG_ANGLE_LABEL = "JCW_CREATE_DIALOG_ANGLE_LABEL";
+
     }
 
     public interface Settings {
@@ -85,6 +93,14 @@ public class Properties {
         public static final String JCW_DIALOG_HEIGHT = "JCW_DIALOG_HEIGHT";
         public static final String JCW_DIALOG_COMPONENT_WIDTH = "JCW_DIALOG_COMPONENT_WIDTH";
         public static final String JCW_DIALOG_COMPONENT_HEIGHT = "JCW_DIALOG_COMPONENT_HEIGHT";
+
+        //com.editor.screen.dialog.JCrossWayCreateDialog
+        public static final String JCW_CREATE_DIALOG_SPINNER_STEP = "JCW_CREATE_DIALOG_SPINNER_STEP";
+        public static final String JCW_CREATE_DIALOG_BORDER_WIDTH = "JCW_CREATE_DIALOG_BORDER_WIDTH";
+        public static final String JCW_CREATE_DIALOG_WIDTH = "JCW_CREATE_DIALOG_WIDTH";
+        public static final String JCW_CREATE_DIALOG_HEIGHT = "JCW_CREATE_DIALOG_HEIGHT";
+        public static final String JCW_CREATE_DIALOG_COMPONENT_WIDTH = "JCW_CREATE_DIALOG_COMPONENT_WIDTH";
+        public static final String JCW_CREATE_DIALOG_COMPONENT_HEIGHT = "JCW_CREATE_DIALOG_COMPONENT_HEIGHT";
 
     }
 
