@@ -3,6 +3,8 @@ package com.editor.visualcomponent;
 import com.editor.screen.ComponentContainer;
 import com.editor.screen.CrossWayContainer;
 import com.editor.screen.WorkComponent;
+import com.game.roadnetwork.Direction;
+import com.game.roadnetwork.Way;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
@@ -19,7 +21,7 @@ import java.util.LinkedList;
  *
  * @author: Alexey
  */
-public class JGridPanel extends JPanel implements ComponentContainer,CrossWayContainer {
+public class JGridPanel extends JPanel implements ComponentContainer, CrossWayContainer {
     private final static Logger LOGGER = Logger.getLogger(JGridPanel.class);
     //TODO add to config file
     public static final int DEFAULT_CELL_SIZE = 5;
@@ -108,23 +110,81 @@ public class JGridPanel extends JPanel implements ComponentContainer,CrossWayCon
 
     @Override
     public void addToSelected(JComponent jComponent) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        LOGGER.trace("Selected " + jComponent);
     }
 
     @Override
     public void removeFromSelected(JComponent jComponent) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        LOGGER.trace("Unselected " + jComponent);
     }
+
+
+    private ActiveWayEntry first;
 
     @Override
     public void crossWayActivated(JCrossWay jCrossWay, int place) {
-     LOGGER.trace("Activated "+jCrossWay + " "+place);
+        synchronized (this) {
+            ActiveWayEntry second = new ActiveWayEntry(jCrossWay, place);
+            if (first == null) {
+                first = second;
+                first.getjCrossWay().setActiveConnector(place);
+            } else {
+                JRoad jRoad = new JRoad(new Way(Direction.FORWARD));
+                add(jRoad);
+                first.getjCrossWay().attachRoad(first.getPlace(), jRoad, true);
+                second.getjCrossWay().attachRoad(second.getPlace(), jRoad, false);
+                first.getjCrossWay().setActiveConnector(-1);
+                first = null;
+            }
+        }
+
+        LOGGER.trace("Activated " + jCrossWay + " " + place);
     }
 
-    @Override
-    public void crossWayDeactivated(JCrossWay jCrossWay) {
-        LOGGER.trace("Deactivated "+jCrossWay);
+    private class ActiveWayEntry {
+        private JCrossWay jCrossWay;
+        private int place;
+
+
+        private ActiveWayEntry(JCrossWay jCrossWay) {
+            this.jCrossWay = jCrossWay;
+        }
+
+        private ActiveWayEntry(JCrossWay jCrossWay, int place) {
+            this.jCrossWay = jCrossWay;
+            this.place = place;
+        }
+
+        public JCrossWay getjCrossWay() {
+            return jCrossWay;
+        }
+
+        public int getPlace() {
+            return place;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (o instanceof ActiveWayEntry) {
+                return jCrossWay.equals(((ActiveWayEntry) o).getjCrossWay());
+            } else {
+                return false;
+            }
+        }
+
+        @Override
+        public int hashCode() {
+            return jCrossWay.hashCode();
+        }
+
+        @Override
+        public String toString() {
+            return "ActiveWayEntry{" +
+                    "jCrossWay=" + jCrossWay +
+                    '}';
+        }
     }
+
 
     private class JGlassComponent extends JComponent implements MouseListener, MouseMotionListener {
         private LinkedList<WorkComponent> workComponents;
@@ -151,14 +211,18 @@ public class JGridPanel extends JPanel implements ComponentContainer,CrossWayCon
                         MouseEvent event = SwingUtilities.convertMouseEvent(this, e, jComponent);
                         if (e.getClickCount() == 1) {
                             if (workComponent.mouseClicked(event)) {
-                                iterator.remove();
-                                workComponents.addFirst(workComponent);
+                                if (!workComponents.getFirst().equals(workComponent)) {
+                                    iterator.remove();
+                                    workComponents.addFirst(workComponent);
+                                }
                                 return;
                             }
                         } else if (e.getClickCount() == 2) {
                             if (workComponent.doubleClicked(event)) {
-                                iterator.remove();
-                                workComponents.addFirst(workComponent);
+                                if (!workComponents.getFirst().equals(workComponent)) {
+                                    iterator.remove();
+                                    workComponents.addFirst(workComponent);
+                                }
                                 return;
                             }
                         }
@@ -177,8 +241,10 @@ public class JGridPanel extends JPanel implements ComponentContainer,CrossWayCon
                     if (jComponent.getBounds().contains(e.getPoint())) {
                         MouseEvent event = SwingUtilities.convertMouseEvent(this, e, jComponent);
                         if (workComponent.mousePressed(event)) {
-                            iterator.remove();
-                            workComponents.addFirst(workComponent);
+                            if (!workComponents.getFirst().equals(workComponent)) {
+                                iterator.remove();
+                                workComponents.addFirst(workComponent);
+                            }
                             return;
                         }
                     }
@@ -196,8 +262,10 @@ public class JGridPanel extends JPanel implements ComponentContainer,CrossWayCon
                     if (jComponent.getBounds().contains(e.getPoint())) {
                         MouseEvent event = SwingUtilities.convertMouseEvent(this, e, jComponent);
                         if (workComponent.mouseReleased(event)) {
-                            iterator.remove();
-                            workComponents.addFirst(workComponent);
+                            if (!workComponents.getFirst().equals(workComponent)) {
+                                iterator.remove();
+                                workComponents.addFirst(workComponent);
+                            }
                             return;
                         }
                     }
@@ -215,8 +283,10 @@ public class JGridPanel extends JPanel implements ComponentContainer,CrossWayCon
                     if (jComponent.getBounds().contains(e.getPoint())) {
                         MouseEvent event = SwingUtilities.convertMouseEvent(this, e, jComponent);
                         if (workComponent.mouseEntered(event)) {
-                            iterator.remove();
-                            workComponents.addFirst(workComponent);
+                            if (!workComponents.getFirst().equals(workComponent)) {
+                                iterator.remove();
+                                workComponents.addFirst(workComponent);
+                            }
                             return;
                         }
                     }
@@ -234,8 +304,10 @@ public class JGridPanel extends JPanel implements ComponentContainer,CrossWayCon
                     if (jComponent.getBounds().contains(e.getPoint())) {
                         MouseEvent event = SwingUtilities.convertMouseEvent(this, e, jComponent);
                         if (workComponent.mouseExited(event)) {
-                            iterator.remove();
-                            workComponents.addFirst(workComponent);
+                            if (!workComponents.getFirst().equals(workComponent)) {
+                                iterator.remove();
+                                workComponents.addFirst(workComponent);
+                            }
                             return;
                         }
                     }
@@ -253,8 +325,10 @@ public class JGridPanel extends JPanel implements ComponentContainer,CrossWayCon
                     if (jComponent.getBounds().contains(e.getPoint())) {
                         MouseEvent event = SwingUtilities.convertMouseEvent(this, e, jComponent);
                         if (workComponent.mouseDragged(event)) {
-                            iterator.remove();
-                            workComponents.addFirst(workComponent);
+                            if (!workComponents.getFirst().equals(workComponent)) {
+                                iterator.remove();
+                                workComponents.addFirst(workComponent);
+                            }
                             return;
                         }
                     }
@@ -272,8 +346,10 @@ public class JGridPanel extends JPanel implements ComponentContainer,CrossWayCon
                     if (jComponent.getBounds().contains(e.getPoint())) {
                         MouseEvent event = SwingUtilities.convertMouseEvent(this, e, jComponent);
                         if (workComponent.mouseMoved(event)) {
-                            iterator.remove();
-                            workComponents.addFirst(workComponent);
+                            if (!workComponents.getFirst().equals(workComponent)) {
+                                iterator.remove();
+                                workComponents.addFirst(workComponent);
+                            }
                             return;
                         }
                     }

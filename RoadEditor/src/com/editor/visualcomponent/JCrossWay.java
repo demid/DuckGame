@@ -27,7 +27,6 @@ public class JCrossWay extends JComponent implements WorkComponent {
     private int selectionPolygonWidth = Properties.getInt(Properties.Settings.JCW_COMPONENT_SELECTION_POLYGON_WIDTH);
 
 
-
     private double angle;
     private double scale;
 
@@ -50,28 +49,16 @@ public class JCrossWay extends JComponent implements WorkComponent {
 
     private int activeConnector = -1;
 
-    private void setActiveConnector(int connector) {
+    void setActiveConnector(int connector) {
         if (connector >= roads.length) {
             throw new IllegalArgumentException("'connector' number can't be great than connectors number.");
-        }
-        if (this.getParent() instanceof CrossWayContainer) {
-            CrossWayContainer crossWayContainer = (CrossWayContainer) this.getParent();
-            if (connector >= 0) {
-                if (activeConnector != connector) {
-                    crossWayContainer.crossWayActivated(this, connector);
-                }
-            } else {
-                if (activeConnector != -1) {
-                    crossWayContainer.crossWayDeactivated(this);
-                }
-            }
         }
         activeConnector = connector;
         repaint();
     }
 
 
-    private int getActiveConnector() {
+    int getActiveConnector() {
         return activeConnector;
     }
 
@@ -171,6 +158,7 @@ public class JCrossWay extends JComponent implements WorkComponent {
         }
 
         roads[place] = new RoadEntry(road, toStart);
+
         updateState(true);
         return this;
     }
@@ -370,11 +358,8 @@ public class JCrossWay extends JComponent implements WorkComponent {
     public boolean mouseClicked(MouseEvent e) {
         for (Map.Entry<Integer, Rectangle> entry : activeConnectors.entrySet()) {
             if (entry.getValue().contains(e.getPoint())) {
-                if (getActiveConnector() == entry.getKey()) {
-                    setActiveConnector(-1);
-                } else {
-                    setActiveConnector(-1);
-                    setActiveConnector(entry.getKey());
+                if (getParent() instanceof CrossWayContainer) {
+                    ((CrossWayContainer) getParent()).crossWayActivated(this, entry.getKey());
                 }
                 return true;
             }

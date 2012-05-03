@@ -132,8 +132,8 @@ public class JMapEditScreen extends JFrame {
 
         JCrossWay c2 = new JCrossWay(3, 0, 50);
         c2.setPosition(100, 100);
-        c2.attachRoad(1, r1, false);
-        c2.attachRoad(2, r2, true);
+        //c2.attachRoad(1, r1, false);
+        //c2.attachRoad(2, r2, true);
 
 
         JCrossWay c3 = new JCrossWay(3, 0, 50);
@@ -142,6 +142,8 @@ public class JMapEditScreen extends JFrame {
 
 
         workAria.add(c1);
+        workAria.add(c2);
+
         //workAria.add(c2);
         //workAria.add(c3);
 
