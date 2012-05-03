@@ -34,7 +34,6 @@ public class App {
             LOGGER.error(e);
         }
 
-
       JMapEditScreen editScreenJ = new JMapEditScreen();
       editScreenJ.setVisible(true);
       editScreenJ.loadMap(new Map(600, 600));

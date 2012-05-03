@@ -32,61 +32,59 @@ public class Properties {
     }
 
     public interface Labels {
-        public static final String MAIN_SCREEN_LABEL = "MAIN_SCREEN_LABEL";
-        public static final String WIDTH_SLIDER_TITLE = "WIDTH_SLIDER_TITLE";
-        public static final String HEIGHT_SLIDER_TITLE = "HEIGHT_SLIDER_TITLE";
-        public static final String DRAW_GRID_TITLE = "DRAW_GRID_TITLE";
-        public static final String GRID_SIZE_TITLE = "GRID_SIZE_TITLE";
-        public static final String WORK_ARIA_SETTINGS_TITLE = "WORK_ARIA_SETTINGS_TITLE";
-        public static final String WORK_ARIA_MAP_OBJECTS_TITLE = "WORK_ARIA_MAP_OBJECTS_TITLE";
-        public static final String SCALE_LABEL = "SCALE_LABEL";
-        public static final String ANGLE_LABEL = "ANGLE_LABEL";
-        public static final String OK_BUTTON_LABEL="OK_BUTTON_LABEL";
-        public static final String CANCEL_BUTTON_LABEL="CANCEL_BUTTON_LABEL";
+        //Common labels
+        public static final String OK_BUTTON_LABEL = "OK_BUTTON_LABEL";
+        public static final String CANCEL_BUTTON_LABEL = "CANCEL_BUTTON_LABEL";
+
+        //com.editor.screen.JMapEditScreen
+        public static final String JMES_WIDTH_SLIDER_LABEL = "JMES_WIDTH_SLIDER_LABEL";
+        public static final String JMES_HEIGHT_SLIDER_LABEL = "JMES_HEIGHT_SLIDER_LABEL";
+        public static final String JMES_DRAW_GRID_LABEL = "JMES_DRAW_GRID_LABEL";
+        public static final String JMES_GRID_SIZE_LABEL = "JMES_GRID_SIZE_LABEL";
+        public static final String JMES_WORK_ARIA_SETTINGS_LABEL = "JMES_WORK_ARIA_SETTINGS_LABEL";
+        public static final String JMES_WORK_ARIA_MAP_OBJECTS_LABEL = "JMES_WORK_ARIA_MAP_OBJECTS_LABEL";
+
+        //com.editor.screen.dialog.JCrossWayDialog
+        public static final String JCW_DIALOG_SCALE_LABEL = "JCW_DIALOG_SCALE_LABEL";
+        public static final String JCW_DIALOG_ANGLE_LABEL = "JCW_DIALOG_ANGLE_LABEL";
     }
 
     public interface Settings {
         //====== Global visual settings
         public static final String LOOK_AND_FEEL_CLASS = "LOOK_AND_FEEL_CLASS";
-        //====== Main screen
-        public static final String MAIN_SCREEN_STATE = "MAIN_SCREEN_STATE";
-        public static final String MAIN_SCREEN_WIDTH = "MAIN_SCREEN_WIDTH";
-        public static final String MAIN_SCREEN_HEIGHT = "MAIN_SCREEN_HEIGHT";
-        public static final String MAIN_SCREEN_MIN_WIDTH = "MAIN_SCREEN_MIN_WIDTH";
-        public static final String MAIN_SCREEN_MIN_HEIGHT = "MAIN_SCREEN_MIN_HEIGHT";
-        public static final String MAIN_SCREEN_CELL_SIZE = "MAIN_SCREEN_CELL_SIZE";
-        public static final String MAIN_SCREEN_CELL_BORDER_WIDTH = "MAIN_SCREEN_CELL_BORDER_WIDTH";
-        //====== Edit screen
-        public static final String EDIT_SCREEN_SATE = "EDIT_SCREEN_SATE";
-        public static final String EDIT_SCREEN_WIDTH = "EDIT_SCREEN_WIDTH";
-        public static final String EDIT_SCREEN_HEIGHT = "EDIT_SCREEN_HEIGHT";
-        public static final String EDIT_SCREEN_MIN_WIDTH = "EDIT_SCREEN_MIN_WIDTH";
-        public static final String EDIT_SCREEN_MIN_HEIGHT = "EDIT_SCREEN_MIN_HEIGHT";
-        public static final String EDIT_SCREEN_CELL_SIZE = "EDIT_SCREEN_CELL_SIZE";
-        public static final String EDIT_SCREEN_CELL_BORDER_WIDTH = "EDIT_SCREEN_CELL_BORDER_WIDTH";
-        public static final String EDIT_SCREEN_SPINNER_WIDTH = "EDIT_SCREEN_SPINNER_WIDTH";
-        public static final String EDIT_SCREEN_SPINNER_HEIGHT = "EDIT_SCREEN_SPINNER_HEIGHT";
-        public static final String EDIT_SCREEN_SPINNER_STEP = "EDIT_SCREEN_SPINNER_STEP";
-        public static final String EDIT_SCREEN_DRAW_GREED = "EDIT_SCREEN_DRAW_GREED";
+
+        //com.editor.screen.JMapEditScreen
+        public static final String JMES_STARTUP_SATE = "JMES_STARTUP_SATE";
+        public static final String JMES_WIDTH = "JMES_WIDTH";
+        public static final String JMES_HEIGHT = "JMES_HEIGHT";
+        public static final String JMES_MIN_WIDTH = "JMES_MIN_WIDTH";
+        public static final String JMES_MIN_HEIGHT = "JMES_MIN_HEIGHT";
+        public static final String JMES_CELL_SIZE = "JMES_CELL_SIZE";
+        public static final String JMES_CELL_BORDER_WIDTH = "JMES_CELL_BORDER_WIDTH";
+        public static final String JMES_COMPONENT_WIDTH = "JMES_COMPONENT_WIDTH";
+        public static final String JMES_COMPONENT_HEIGHT = "JMES_COMPONENT_HEIGHT";
+        public static final String JMES_SPINNER_STEP = "JMES_SPINNER_STEP";
+        public static final String JMES_DRAW_GREED = "JMES_DRAW_GREED";
+        public static final String JMES_MAP_OBJECT_BUTTON_HEIGHT = "JMES_MAP_OBJECT_BUTTON_HEIGHT";
+        public static final String JMES_MAP_OBJECT_BUTTON_WIDTH = "JMES_MAP_OBJECT_BUTTON_WIDTH";
+        public static final String JMES_CROSS_WAY_BUTTON_ICO = "JMES_CROSS_WAY_BUTTON_ICO";
 
 
-        public static final String MAP_OBJECT_BUTTON_HEIGHT = "MAP_OBJECT_BUTTON_HEIGHT";
-        public static final String MAP_OBJECT_BUTTON_WIDTH = "MAP_OBJECT_BUTTON_WIDTH";
-        //====== Icons
-        public static final String CROSS_WAY_BUTTON_ICO = "CROSS_WAY_BUTTON_ICO";
+        //com.editor.visualcomponent.JCrossWay
+        public static final String JCW_COMPONENT_WAY_CONNECTOR_SIZE = "JCW_COMPONENT_WAY_CONNECTOR_SIZE";
+        public static final String JCW_COMPONENT_SELECTION_POLYGON_WIDTH = "JCW_COMPONENT_SELECTION_POLYGON_WIDTH";
 
-        //====== Visual setting
-        public static final String WAY_LINE_WIDTH = "WAY_LINE_WIDTH";
-        public static final String WAY_ARROW_WIDTH = "WAY_ARROW_WIDTH";
-        public static final String WAY_ARROW_HEIGHT = "WAY_ARROW_HEIGHT";
-        public static final String WAY_ARROW_COLOR = "WAY_ARROW_COLOR";
-        public static final String WAY_ARROW_ACTIVE_COLOR = "WAY_ARROW_ACTIVE_COLOR";
-        public static final String WAY_CONNECTOR_SIZE = "WAY_CONNECTOR_SIZE";
-        public static final String SELECTION_POLYGON_WIDTH = "SELECTION_POLYGON_WIDTH";
-        //====== Dialog settings
-        public static final String DIALOG_SPINNER_STEP ="DIALOG_SPINNER_STEP";
-        public static final String DIALOG_WIDTH = "DIALOG_WIDTH";
-        public static final String DIALOG_HEIGHT = "DIALOG_HEIGHT";
+        //com.editor.visualcomponent.JRoad
+        public static final String JR_COMPONENT_SELECTION_POLYGON_WIDTH = "JR_COMPONENT_SELECTION_POLYGON_WIDTH";
+
+
+        //com.editor.screen.dialog.JCrossWayDialog
+        public static final String JCW_DIALOG_SPINNER_STEP = "JCW_DIALOG_SPINNER_STEP";
+        public static final String JCW_DIALOG_BORDER_WIDTH = "JCW_DIALOG_BORDER_WIDTH";
+        public static final String JCW_DIALOG_WIDTH = "JCW_DIALOG_WIDTH";
+        public static final String JCW_DIALOG_HEIGHT = "JCW_DIALOG_HEIGHT";
+        public static final String JCW_DIALOG_COMPONENT_WIDTH = "JCW_DIALOG_COMPONENT_WIDTH";
+        public static final String JCW_DIALOG_COMPONENT_HEIGHT = "JCW_DIALOG_COMPONENT_HEIGHT";
 
     }
 

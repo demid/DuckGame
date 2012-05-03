@@ -23,12 +23,14 @@ import java.util.List;
  */
 public class JRoad extends JComponent implements WorkComponent {
     private final static Logger LOGGER = Logger.getLogger(JRoad.class);
+    private int selectionPolygonWidth = Properties.getInt(Properties.Settings.JR_COMPONENT_SELECTION_POLYGON_WIDTH);
+
+
     private JCrossWay start;
     private JCrossWay end;
     private ComponentContainer componentContainer;
     private boolean selected = false;
     private java.util.List<WayEntry> waysList = new ArrayList();
-    private int selectionPolygonWidth = Properties.getInt(Properties.Settings.SELECTION_POLYGON_WIDTH);
 
     public JRoad(Way... ways) {
         for (Way way : ways) {

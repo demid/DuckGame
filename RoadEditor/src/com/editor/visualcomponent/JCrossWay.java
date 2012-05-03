@@ -23,14 +23,17 @@ import java.util.List;
  */
 public class JCrossWay extends JComponent implements WorkComponent {
     private final static Logger LOGGER = Logger.getLogger(JCrossWay.class);
+    private int connectorSize = Properties.getInt(Properties.Settings.JCW_COMPONENT_WAY_CONNECTOR_SIZE);
+    private int selectionPolygonWidth = Properties.getInt(Properties.Settings.JCW_COMPONENT_SELECTION_POLYGON_WIDTH);
+
+
+
     private double angle;
     private double scale;
 
 
     private RoadEntry[] roads;
 
-    private int connectorSize = Properties.getInt(Properties.Settings.WAY_CONNECTOR_SIZE);
-    private int selectionPolygonWidth = Properties.getInt(Properties.Settings.SELECTION_POLYGON_WIDTH);
     private double maxWays;
     private double size;
     private double triangleAngle;
