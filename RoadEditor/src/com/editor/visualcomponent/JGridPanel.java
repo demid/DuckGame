@@ -2,13 +2,13 @@ package com.editor.visualcomponent;
 
 import com.editor.screen.ComponentContainer;
 import com.editor.screen.CrossWayContainer;
-import com.editor.screen.WorkComponent;
 import com.game.roadnetwork.Direction;
 import com.game.roadnetwork.Way;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -46,7 +46,6 @@ public class JGridPanel extends JPanel implements ComponentContainer, CrossWayCo
     protected void addImpl(Component comp, Object constraints, int index) {
         super.addImpl(comp, constraints, index);
         if (comp instanceof WorkComponent) {
-            ((WorkComponent) comp).setComponentContainer(this);
             workComponents.add((WorkComponent) comp);
         } else {
             LOGGER.warn(comp.getClass().getName() + " doesn't implement WorkComponent. Mouse events isn't available for it. ");
@@ -109,13 +108,28 @@ public class JGridPanel extends JPanel implements ComponentContainer, CrossWayCo
     }
 
     @Override
-    public void addToSelected(JComponent jComponent) {
-        LOGGER.trace("Selected " + jComponent);
-    }
+    public void addToSelected(WorkComponent workComponent, InputEvent e) {
+        if (!workComponent.canBeSelected(e)) {
+            return;
+        }
+        if (e.getID() == MouseEvent.MOUSE_CLICKED) {
 
-    @Override
-    public void removeFromSelected(JComponent jComponent) {
-        LOGGER.trace("Unselected " + jComponent);
+            if (workComponent.isSelected()) {
+                workComponent.setSelected(false);
+            } else {
+                workComponent.setSelected(true);
+            }
+            workComponent.getComponent().repaint();
+            if (!e.isShiftDown()) {
+                for (WorkComponent component : workComponents) {
+                    if ((component != workComponent) && (component.isSelected())) {
+                        component.setSelected(false);
+                        component.getComponent().repaint();
+                    }
+                }
+            }
+            LOGGER.trace("Selected " + e + workComponent);
+        }
     }
 
 
@@ -215,6 +229,8 @@ public class JGridPanel extends JPanel implements ComponentContainer, CrossWayCo
                                     iterator.remove();
                                     workComponents.addFirst(workComponent);
                                 }
+
+                                addToSelected(workComponent, e);
                                 return;
                             }
                         } else if (e.getClickCount() == 2) {

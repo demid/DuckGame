@@ -1,6 +1,9 @@
 package com.editor.screen;
 
+import com.editor.visualcomponent.WorkComponent;
+
 import javax.swing.*;
+import java.awt.event.InputEvent;
 
 /**
  * Date: 02.05.12
@@ -9,7 +12,6 @@ import javax.swing.*;
  * @author: Alexey
  */
 public interface ComponentContainer {
-    public void addToSelected(JComponent jComponent);
-    public void removeFromSelected(JComponent jComponent);
+    public void addToSelected(WorkComponent workComponent,InputEvent e);
 
 }

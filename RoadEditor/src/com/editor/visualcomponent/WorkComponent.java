@@ -1,6 +1,7 @@
-package com.editor.screen;
+package com.editor.visualcomponent;
 
 import javax.swing.*;
+import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 
 /**
@@ -10,8 +11,6 @@ import java.awt.event.MouseEvent;
  * @author: Alexey
  */
 public interface WorkComponent {
-
-    public void setComponentContainer(ComponentContainer componentContainer);
 
     public JComponent getComponent();
 
@@ -30,4 +29,10 @@ public interface WorkComponent {
     public boolean mouseDragged(MouseEvent e);
 
     public boolean mouseMoved(MouseEvent e);
+
+    public boolean canBeSelected(InputEvent event);
+
+    public void setSelected(boolean selected);
+
+    public boolean isSelected();
 }

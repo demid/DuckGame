@@ -1,9 +1,7 @@
 package com.editor.visualcomponent;
 
 import com.editor.res.Properties;
-import com.editor.screen.ComponentContainer;
 import com.editor.screen.CrossWayContainer;
-import com.editor.screen.WorkComponent;
 import com.editor.screen.dialog.JCrossWayDialog;
 import com.game.util.Coordinate;
 import com.game.util.MathPolygon;
@@ -11,6 +9,7 @@ import org.apache.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.util.*;
 import java.util.List;
@@ -44,7 +43,6 @@ public class JCrossWay extends JComponent implements WorkComponent {
     private MathPolygon selectionPolygon;
     private Map<Integer, Rectangle> activeConnectors = new HashMap<Integer, Rectangle>();
     //==================================
-    private ComponentContainer componentContainer;
 
 
     private int activeConnector = -1;
@@ -62,14 +60,6 @@ public class JCrossWay extends JComponent implements WorkComponent {
         return activeConnector;
     }
 
-
-    public ComponentContainer getComponentContainer() {
-        return componentContainer;
-    }
-
-    public void setComponentContainer(ComponentContainer componentContainer) {
-        this.componentContainer = componentContainer;
-    }
 
     @Override
     public JComponent getComponent() {
@@ -103,20 +93,20 @@ public class JCrossWay extends JComponent implements WorkComponent {
         updateState(true);
     }
 
+
+    @Override
     public boolean isSelected() {
         return selected;
     }
 
+    @Override
+    public boolean canBeSelected(InputEvent event) {
+        return true;
+    }
+
+    @Override
     public void setSelected(boolean selected) {
         this.selected = selected;
-        ComponentContainer container = getComponentContainer();
-        if (container != null) {
-            if (selected) {
-                container.addToSelected(this);
-            } else {
-                container.removeFromSelected(this);
-            }
-        }
     }
 
     public int getPlacesCount() {
@@ -157,7 +147,7 @@ public class JCrossWay extends JComponent implements WorkComponent {
             }
         }
 
-        if(road.getStart()==road.getEnd()){
+        if (road.getStart() == road.getEnd()) {
             throw new IllegalStateException("Road start and road end can't be the same JCrossWay.");
         }
         roads[place] = new RoadEntry(road, toStart);
@@ -363,8 +353,6 @@ public class JCrossWay extends JComponent implements WorkComponent {
             }
         }
         if (onLine) {
-            setSelected(!isSelected());
-            repaint();
             return true;
         }
         return false;

@@ -1,8 +1,6 @@
 package com.editor.visualcomponent;
 
 import com.editor.res.Properties;
-import com.editor.screen.ComponentContainer;
-import com.editor.screen.WorkComponent;
 import com.game.roadnetwork.Way;
 import com.game.util.Coordinate;
 import com.game.util.MathLine;
@@ -10,6 +8,7 @@ import org.apache.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,14 +20,13 @@ import java.util.List;
  *
  * @author: Alexey
  */
-public class JRoad extends JComponent implements WorkComponent {
+public class JRoad extends JComponent implements WorkComponent{
     private final static Logger LOGGER = Logger.getLogger(JRoad.class);
     private int selectionPolygonWidth = Properties.getInt(Properties.Settings.JR_COMPONENT_SELECTION_POLYGON_WIDTH);
 
 
     private JCrossWay start;
     private JCrossWay end;
-    private ComponentContainer componentContainer;
     private boolean selected = false;
     private java.util.List<WayEntry> waysList = new ArrayList();
 
@@ -134,16 +132,9 @@ public class JRoad extends JComponent implements WorkComponent {
         }
     }
 
-    public ComponentContainer getComponentContainer() {
-        return componentContainer;
-    }
 
     private boolean onLine = false;
 
-    @Override
-    public void setComponentContainer(ComponentContainer componentContainer) {
-        this.componentContainer = componentContainer;
-    }
 
     @Override
     public JComponent getComponent() {
@@ -158,16 +149,6 @@ public class JRoad extends JComponent implements WorkComponent {
     @Override
     public boolean mouseClicked(MouseEvent e) {
         if (onLine) {
-            selected = !selected;
-            ComponentContainer container = getComponentContainer();
-            if (container != null) {
-                if (selected) {
-                    container.addToSelected(this);
-                } else {
-                    container.removeFromSelected(this);
-                }
-            }
-            repaint();
             return true;
         }
         return false;
@@ -179,7 +160,7 @@ public class JRoad extends JComponent implements WorkComponent {
         for (WayEntry wayEntry : waysList) {
             MathLine mathLine = wayEntry.getMathLine();
             if (mathLine != null) {
-                double  distance =  mathLine.getDistance(new Coordinate(e.getX()+getX(), e.getY()+getY()));
+                double distance = mathLine.getDistance(new Coordinate(e.getX() + getX(), e.getY() + getY()));
                 if (distance <= selectionPolygonWidth) {
                     onLine = true;
                     return true;
@@ -212,6 +193,21 @@ public class JRoad extends JComponent implements WorkComponent {
     @Override
     public boolean mouseMoved(MouseEvent e) {
         return false;
+    }
+
+    @Override
+    public boolean canBeSelected(InputEvent event) {
+        return true;
+    }
+
+    @Override
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
+
+    @Override
+    public boolean isSelected() {
+        return selected;
     }
 
     class WayEntry {
