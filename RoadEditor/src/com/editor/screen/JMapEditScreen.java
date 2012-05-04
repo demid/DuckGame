@@ -115,7 +115,7 @@ public class JMapEditScreen extends JFrame {
         drawGrid.addActionListener(drawGridListener);
 
         workAria.setLayout(null);
-
+        workAria.setDrawGrid(DRAW_GREED);
 
         containerWorkAria.add(workAria);
 
