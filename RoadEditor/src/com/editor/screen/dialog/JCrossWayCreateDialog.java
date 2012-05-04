@@ -45,14 +45,21 @@ public class JCrossWayCreateDialog extends JDialog {
     private double angle;
     private double scale;
     private JCrossWay jCrossWay = null;
+    private boolean writePosition;
+
+
+    JCrossWayCreateDialog(String title, int placesCount, double angle, double scale) {
+        writePosition = false;
+        init(title, x, y, placesCount, angle, scale, writePosition);
+    }
 
     JCrossWayCreateDialog(String title, int x, int y, int placesCount, double angle, double scale) {
+        writePosition = true;
+        init(title, x, y, placesCount, angle, scale, writePosition);
+    }
+
+    private void init(String title, int x, int y, int placesCount, double angle, double scale, boolean writePosition) {
         setTitle(title);
-        this.x = x;
-        this.y = y;
-        this.placesCount = placesCount;
-        this.angle = angle;
-        this.scale = scale;
         if (placesCount < 1) {
             throw new IllegalArgumentException("'placesCount' should be great than 0.");
         }
@@ -60,21 +67,25 @@ public class JCrossWayCreateDialog extends JDialog {
             throw new IllegalArgumentException("'scale' can't be less than 0.");
         }
         JPanel topPanel = new JPanel(new VerticalBagLayout());
-        JLabel jPositionLabel = new JLabel(DIALOG_POSITION_LABEL);
-        jPositionLabel.setPreferredSize(new Dimension(DIALOG_COMPONENT_WIDTH, DIALOG_COMPONENT_HEIGHT));
-        topPanel.add(jPositionLabel);
 
         //TODO add spinner settings to properties file
         angleSpinner = new JSpinner(new SpinnerNumberModel(angle, -Double.MAX_VALUE, Double.MAX_VALUE, DIALOG_SPINNER_STEP));
         scaleSpinner = new JSpinner(new SpinnerNumberModel(scale, 0, Double.MAX_VALUE, DIALOG_SPINNER_STEP));
         placesCountSpinner = new JSpinner(new SpinnerNumberModel(placesCount, 1, Integer.MAX_VALUE, 1));
-        positionX = new JSpinner(new SpinnerNumberModel(x, -Integer.MAX_VALUE, Integer.MAX_VALUE, 1));
-        positionY = new JSpinner(new SpinnerNumberModel(y, -Integer.MAX_VALUE, Integer.MAX_VALUE, 1));
 
-        JPanel positionPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        positionPanel.add(positionX);
-        positionPanel.add(positionY);
-        topPanel.add(positionPanel);
+        if (writePosition) {
+            JLabel jPositionLabel = new JLabel(DIALOG_POSITION_LABEL);
+            jPositionLabel.setPreferredSize(new Dimension(DIALOG_COMPONENT_WIDTH, DIALOG_COMPONENT_HEIGHT));
+            topPanel.add(jPositionLabel);
+
+            positionX = new JSpinner(new SpinnerNumberModel(x, -Integer.MAX_VALUE, Integer.MAX_VALUE, 1));
+            positionY = new JSpinner(new SpinnerNumberModel(y, -Integer.MAX_VALUE, Integer.MAX_VALUE, 1));
+
+            JPanel positionPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            positionPanel.add(positionX);
+            positionPanel.add(positionY);
+            topPanel.add(positionPanel);
+        }
 
         JLabel jPlaceCountLabel = new JLabel(DIALOG_ROAD_NUMBER_LABEL);
         jPlaceCountLabel.setPreferredSize(new Dimension(DIALOG_COMPONENT_WIDTH, DIALOG_COMPONENT_HEIGHT));
@@ -129,8 +140,8 @@ public class JCrossWayCreateDialog extends JDialog {
         @Override
         public void actionPerformed(ActionEvent e) {
             close();
-            jCrossWay = new JCrossWay((Integer) placesCountSpinner.getValue(), (Double) angleSpinner.getValue(), (Double) scaleSpinner.getValue());
-            jCrossWay.setPosition((Integer) positionX.getValue(), (Integer) positionY.getValue());
+            jCrossWay = new JCrossWay(placesCount, angle, scale);
+            jCrossWay.setLocation(x, y);
         }
     };
 
@@ -146,10 +157,24 @@ public class JCrossWayCreateDialog extends JDialog {
         setVisible(false);
         angle = (Double) angleSpinner.getValue();
         scale = (Double) scaleSpinner.getValue();
+        placesCount = (Integer) placesCountSpinner.getValue();
+        if (writePosition) {
+            x = (Integer) positionX.getValue();
+            y = (Integer) positionY.getValue();
+        } else {
+            x = 0;
+            y = 0;
+        }
     }
 
     public JCrossWay getResult() {
         return jCrossWay;
+    }
+
+    public static JCrossWay showDialog(String title, int placesCount, double angle, double scale) {
+        JCrossWayCreateDialog dialog = new JCrossWayCreateDialog(title, placesCount, angle, scale);
+        dialog.setVisible(true);
+        return dialog.getResult();
     }
 
     public static JCrossWay showDialog(String title, int x, int y, int placesCount, double angle, double scale) {

@@ -251,11 +251,6 @@ public class JCrossWay extends JComponent implements WorkComponent {
         updateState(false);
     }
 
-    public void setPosition(int x, int y) {
-        super.setBounds(x, y, (int) size, (int) size);
-        updateState(false);
-    }
-
 
     void updateState(boolean updatePosition) {
 
@@ -400,7 +395,7 @@ public class JCrossWay extends JComponent implements WorkComponent {
     @Override
     public boolean mouseDragged(MouseEvent e) {
         if (onLine) {
-            setPosition((int) (getX() + e.getX() - point.getX()), (int) (getY() + e.getY() - point.getY()));
+            setLocation((int) (getX() + e.getX() - point.getX()), (int) (getY() + e.getY() - point.getY()));
             return true;
         }
         return false;

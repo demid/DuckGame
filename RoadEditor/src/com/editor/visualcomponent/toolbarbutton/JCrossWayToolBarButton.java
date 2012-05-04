@@ -1,11 +1,12 @@
 package com.editor.visualcomponent.toolbarbutton;
 
 import com.editor.res.Properties;
+import com.editor.screen.dialog.JCrossWayCreateDialog;
+import com.editor.visualcomponent.JCrossWay;
 import com.editor.visualcomponent.JGridPanel;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 
 /**
  * Date: 04.05.12
@@ -13,6 +14,7 @@ import java.awt.event.ActionEvent;
  *
  * @author: Alexey
  */
+//TODO add to properties file
 public class JCrossWayToolBarButton extends JToolBarButton {
 
     private final static Icon ICON = Properties.getIcon(Properties.Settings.JCW_TOOLBAR_BUTTON_ICO);
@@ -23,11 +25,20 @@ public class JCrossWayToolBarButton extends JToolBarButton {
 
     @Override
     public void actionPerformed() {
-        //To change body of implemented methods use File | Settings | File Templates.
+        JCrossWay jCrossWay = JCrossWayCreateDialog.showDialog("", getWorkAria().getWidth() / 2, getWorkAria().getHeight() / 2, 4, 0, 50);
+        if (jCrossWay != null) {
+            getWorkAria().add(jCrossWay);
+            getWorkAria().repaint();
+        }
     }
 
     @Override
     public void actionPerformed(Point point) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        JCrossWay jCrossWay = JCrossWayCreateDialog.showDialog("", 4, 0, 50);
+        if (jCrossWay != null) {
+            jCrossWay.setLocation(point);
+            getWorkAria().add(jCrossWay);
+            getWorkAria().repaint();
+        }
     }
 }

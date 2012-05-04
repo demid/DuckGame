@@ -102,6 +102,9 @@ public abstract class JToolBarButton extends JButton {
         }
     };
 
+    public JGridPanel getWorkAria() {
+        return workAria;
+    }
 
     private ActionListener actionListener = new ActionListener() {
         @Override
