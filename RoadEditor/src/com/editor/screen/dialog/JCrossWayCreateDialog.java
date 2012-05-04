@@ -17,9 +17,13 @@ import java.awt.event.KeyEvent;
  * @author: Alexey
  */
 public class JCrossWayCreateDialog extends JDialog {
+    private static final boolean DIALOG_AUTO_POSITION = Properties.getBoolean(Properties.Settings.DIALOG_AUTO_POSITION);
+
     private static final int DIALOG_WIDTH = Properties.getInt(Properties.Settings.JCW_CREATE_DIALOG_WIDTH);
     private static final int DIALOG_BORDER_WIDTH = Properties.getInt(Properties.Settings.JCW_CREATE_DIALOG_BORDER_WIDTH);
     private static final int DIALOG_HEIGHT = Properties.getInt(Properties.Settings.JCW_CREATE_DIALOG_HEIGHT);
+    private static final int DIALOG_WITHOUT_POSITION_HEIGHT = Properties.getInt(Properties.Settings.JCW_CREATE_DIALOG_WITHOUT_POSITION_HEIGHT);
+
     private static final double DIALOG_SPINNER_STEP = Properties.getDouble(Properties.Settings.JCW_CREATE_DIALOG_SPINNER_STEP);
     private static final int DIALOG_COMPONENT_WIDTH = Properties.getInt(Properties.Settings.JCW_CREATE_DIALOG_COMPONENT_WIDTH);
     private static final int DIALOG_COMPONENT_HEIGHT = Properties.getInt(Properties.Settings.JCW_CREATE_DIALOG_COMPONENT_HEIGHT);
@@ -81,7 +85,7 @@ public class JCrossWayCreateDialog extends JDialog {
             positionX = new JSpinner(new SpinnerNumberModel(x, -Integer.MAX_VALUE, Integer.MAX_VALUE, 1));
             positionY = new JSpinner(new SpinnerNumberModel(y, -Integer.MAX_VALUE, Integer.MAX_VALUE, 1));
 
-            JPanel positionPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            JPanel positionPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
             positionPanel.add(positionX);
             positionPanel.add(positionY);
             topPanel.add(positionPanel);
@@ -116,12 +120,20 @@ public class JCrossWayCreateDialog extends JDialog {
         topPanel.add(panel);
 
 
-        topPanel.setBounds(DIALOG_BORDER_WIDTH, DIALOG_BORDER_WIDTH, DIALOG_WIDTH - DIALOG_BORDER_WIDTH * 2, DIALOG_HEIGHT - DIALOG_BORDER_WIDTH * 2);
+        int height;
+        if (writePosition) {
+            height = DIALOG_HEIGHT;
+        } else {
+            height = DIALOG_WITHOUT_POSITION_HEIGHT;
+        }
+        topPanel.setBounds(DIALOG_BORDER_WIDTH, DIALOG_BORDER_WIDTH, DIALOG_WIDTH - DIALOG_BORDER_WIDTH * 2, height - DIALOG_BORDER_WIDTH * 2);
+
 
         getContentPane().setLayout(null);
         getContentPane().add(topPanel);
 
-        setSize(DIALOG_WIDTH, DIALOG_HEIGHT);
+        setSize(DIALOG_WIDTH, height + DIALOG_BORDER_WIDTH);
+        //setSize(DIALOG_WIDTH, DIALOG_HEIGHT);
         setResizable(false);
         getRootPane().setDefaultButton(okButton);
         getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "CANCEL");
@@ -173,13 +185,21 @@ public class JCrossWayCreateDialog extends JDialog {
 
     public static JCrossWay showDialog(String title, int placesCount, double angle, double scale) {
         JCrossWayCreateDialog dialog = new JCrossWayCreateDialog(title, placesCount, angle, scale);
+        if (DIALOG_AUTO_POSITION) {
+            dialog.setLocation(MouseInfo.getPointerInfo().getLocation().x - dialog.getWidth() / 2, MouseInfo.getPointerInfo().getLocation().y - dialog.getHeight() / 2);
+        }
         dialog.setVisible(true);
+
         return dialog.getResult();
     }
 
     public static JCrossWay showDialog(String title, int x, int y, int placesCount, double angle, double scale) {
         JCrossWayCreateDialog dialog = new JCrossWayCreateDialog(title, x, y, placesCount, angle, scale);
+        if (DIALOG_AUTO_POSITION) {
+            dialog.setLocation(MouseInfo.getPointerInfo().getLocation().x - dialog.getWidth() / 2, MouseInfo.getPointerInfo().getLocation().y - dialog.getHeight() / 2);
+        }
         dialog.setVisible(true);
+
         return dialog.getResult();
     }
 }

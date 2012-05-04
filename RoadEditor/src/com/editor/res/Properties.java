@@ -60,6 +60,7 @@ public class Properties {
     public interface Settings {
         //====== Global visual settings
         public static final String LOOK_AND_FEEL_CLASS = "LOOK_AND_FEEL_CLASS";
+        public static final String DIALOG_AUTO_POSITION = "DIALOG_AUTO_POSITION";
 
         //com.editor.screen.JMapEditScreen
         public static final String JMES_STARTUP_SATE = "JMES_STARTUP_SATE";
@@ -101,6 +102,7 @@ public class Properties {
         public static final String JCW_CREATE_DIALOG_BORDER_WIDTH = "JCW_CREATE_DIALOG_BORDER_WIDTH";
         public static final String JCW_CREATE_DIALOG_WIDTH = "JCW_CREATE_DIALOG_WIDTH";
         public static final String JCW_CREATE_DIALOG_HEIGHT = "JCW_CREATE_DIALOG_HEIGHT";
+        public static final String JCW_CREATE_DIALOG_WITHOUT_POSITION_HEIGHT = "JCW_CREATE_DIALOG_WITHOUT_POSITION_HEIGHT";
         public static final String JCW_CREATE_DIALOG_COMPONENT_WIDTH = "JCW_CREATE_DIALOG_COMPONENT_WIDTH";
         public static final String JCW_CREATE_DIALOG_COMPONENT_HEIGHT = "JCW_CREATE_DIALOG_COMPONENT_HEIGHT";
 
