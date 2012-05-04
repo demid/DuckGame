@@ -75,7 +75,6 @@ public class Properties {
         public static final String JMES_DRAW_GREED = "JMES_DRAW_GREED";
         public static final String JMES_MAP_OBJECT_BUTTON_HEIGHT = "JMES_MAP_OBJECT_BUTTON_HEIGHT";
         public static final String JMES_MAP_OBJECT_BUTTON_WIDTH = "JMES_MAP_OBJECT_BUTTON_WIDTH";
-        public static final String JMES_CROSS_WAY_BUTTON_ICO = "JMES_CROSS_WAY_BUTTON_ICO";
 
 
         //com.editor.visualcomponent.JCrossWay
@@ -84,6 +83,9 @@ public class Properties {
 
         //com.editor.visualcomponent.JRoad
         public static final String JR_COMPONENT_SELECTION_POLYGON_WIDTH = "JR_COMPONENT_SELECTION_POLYGON_WIDTH";
+
+        //com.editor.visualcomponent.toolbarbutton.JCrossWayToolBarButton
+        public static final String JCW_TOOLBAR_BUTTON_ICO = "JCW_TOOLBAR_BUTTON_ICO";
 
 
         //com.editor.screen.dialog.JCrossWayDialog

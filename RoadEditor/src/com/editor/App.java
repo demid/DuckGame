@@ -3,8 +3,6 @@ package com.editor;
 import com.editor.map.Map;
 import com.editor.res.Properties;
 import com.editor.screen.JMapEditScreen;
-import com.editor.screen.dialog.JCrossWayCreateDialog;
-import com.editor.screen.dialog.JCrossWayDialog;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
@@ -35,13 +33,11 @@ public class App {
             LOGGER.error(e);
         }
 
-        JCrossWayCreateDialog dialog = new JCrossWayCreateDialog("Hi!",20,20,2,0,50);
-       dialog.setVisible(true);
-        /*
-      JMapEditScreen editScreenJ = new JMapEditScreen();
-      editScreenJ.setVisible(true);
-      editScreenJ.loadMap(new Map(600, 600));
-          */
+        JMapEditScreen editScreenJ = new JMapEditScreen();
+        JMapEditScreen.createDefaultButtons(editScreenJ);
+        editScreenJ.setVisible(true);
+        editScreenJ.loadMap(new Map(600, 600));
+
     }
 
 }

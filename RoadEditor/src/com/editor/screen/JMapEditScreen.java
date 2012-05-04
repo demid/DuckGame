@@ -2,11 +2,9 @@ package com.editor.screen;
 
 import com.editor.map.Map;
 import com.editor.res.Properties;
-import com.editor.visualcomponent.JCrossWay;
 import com.editor.visualcomponent.JGridPanel;
-import com.editor.visualcomponent.JRoad;
-import com.game.roadnetwork.Direction;
-import com.game.roadnetwork.Way;
+import com.editor.visualcomponent.toolbarbutton.JCrossWayToolBarButton;
+import com.editor.visualcomponent.toolbarbutton.JToolBarButton;
 import org.apache.log4j.Logger;
 import sun.awt.VerticalBagLayout;
 
@@ -18,6 +16,8 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Date: 24.04.12
@@ -28,41 +28,41 @@ import java.awt.event.ActionListener;
 public class JMapEditScreen extends JFrame {
     private final static Logger LOGGER = Logger.getLogger(JMapEditScreen.class);
 
-    private String widthSliderLabel = Properties.getLabel(Properties.Labels.JMES_WIDTH_SLIDER_LABEL);
-    private String heightSliderLabel = Properties.getLabel(Properties.Labels.JMES_HEIGHT_SLIDER_LABEL);
-    private String drawGridLabel = Properties.getLabel(Properties.Labels.JMES_DRAW_GRID_LABEL);
-    private String gridSizeLabel = Properties.getLabel(Properties.Labels.JMES_GRID_SIZE_LABEL);
-    private String workAriaSettingsLabel = Properties.getLabel(Properties.Labels.JMES_WORK_ARIA_SETTINGS_LABEL);
-    private String workAriaMapObjectsLabel = Properties.getLabel(Properties.Labels.JMES_WORK_ARIA_MAP_OBJECTS_LABEL);
+    private static String WIDTH_SLIDER_LABEL = Properties.getLabel(Properties.Labels.JMES_WIDTH_SLIDER_LABEL);
+    private static String HEIGHT_SLIDER_LABEL = Properties.getLabel(Properties.Labels.JMES_HEIGHT_SLIDER_LABEL);
+    private static String DRAW_GRID_LABEL = Properties.getLabel(Properties.Labels.JMES_DRAW_GRID_LABEL);
+    private static String GRID_SIZE_LABEL = Properties.getLabel(Properties.Labels.JMES_GRID_SIZE_LABEL);
+    private static String WORK_ARIA_SETTINGS_LABEL = Properties.getLabel(Properties.Labels.JMES_WORK_ARIA_SETTINGS_LABEL);
+    private static String WORK_ARIA_MAP_OBJECTS_LABEL = Properties.getLabel(Properties.Labels.JMES_WORK_ARIA_MAP_OBJECTS_LABEL);
 
-    private int width = Properties.getInt(Properties.Settings.JMES_WIDTH);
-    private int height = Properties.getInt(Properties.Settings.JMES_HEIGHT);
-    private int minWidth = Properties.getInt(Properties.Settings.JMES_MIN_WIDTH);
-    private int minHeight = Properties.getInt(Properties.Settings.JMES_MIN_HEIGHT);
-
-
-    private int startupState = Properties.getInt(Properties.Settings.JMES_STARTUP_SATE);
-    private int spinnerStep = Properties.getInt(Properties.Settings.JMES_SPINNER_STEP);
-    private int cellSize = Properties.getInt(Properties.Settings.JMES_CELL_SIZE);
-    private boolean drawGreed = Properties.getBoolean(Properties.Settings.JMES_DRAW_GREED);
-    private int cellBorderWidth = Properties.getInt(Properties.Settings.JMES_CELL_BORDER_WIDTH);
-    private int componentWidth = Properties.getInt(Properties.Settings.JMES_COMPONENT_WIDTH);
-    private int componentHeight = Properties.getInt(Properties.Settings.JMES_COMPONENT_HEIGHT);
-    private int mapObjectButtonWidth = Properties.getInt(Properties.Settings.JMES_MAP_OBJECT_BUTTON_HEIGHT);
-    private int mapObjectButtonHeight = Properties.getInt(Properties.Settings.JMES_MAP_OBJECT_BUTTON_WIDTH);
+    private static int WIDTH = Properties.getInt(Properties.Settings.JMES_WIDTH);
+    private static int HEIGHT = Properties.getInt(Properties.Settings.JMES_HEIGHT);
+    private static int MIN_WIDTH = Properties.getInt(Properties.Settings.JMES_MIN_WIDTH);
+    private static int MIN_HEIGHT = Properties.getInt(Properties.Settings.JMES_MIN_HEIGHT);
 
 
-    private Icon wayButtonIcon =  Properties.getIcon(Properties.Settings.JMES_CROSS_WAY_BUTTON_ICO);
+    private static int STARTUP_SATE = Properties.getInt(Properties.Settings.JMES_STARTUP_SATE);
+    private static int SPINNER_STEP = Properties.getInt(Properties.Settings.JMES_SPINNER_STEP);
+    private static int CELL_SIZE = Properties.getInt(Properties.Settings.JMES_CELL_SIZE);
+    private static boolean DRAW_GREED = Properties.getBoolean(Properties.Settings.JMES_DRAW_GREED);
+    private static int CELL_BORDER_WIDTH = Properties.getInt(Properties.Settings.JMES_CELL_BORDER_WIDTH);
+    private static int COMPONENT_WIDTH = Properties.getInt(Properties.Settings.JMES_COMPONENT_WIDTH);
+    private static int COMPONENT_HEIGHT = Properties.getInt(Properties.Settings.JMES_COMPONENT_HEIGHT);
+    private static int MAP_OBJECT_BUTTON_HEIGHT = Properties.getInt(Properties.Settings.JMES_MAP_OBJECT_BUTTON_HEIGHT);
+    private static int MAP_OBJECT_BUTTON_WIDTH = Properties.getInt(Properties.Settings.JMES_MAP_OBJECT_BUTTON_WIDTH);
+
 
     private JGridPanel workAria = new JGridPanel();
     private JPanel containerWorkAria = new JPanel();
+    private JPanel toolBarButtonsPanel = new JPanel(new VerticalBagLayout());
+
+
     private Map map;
-    private JSpinner widthSpinner = new JSpinner(new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, spinnerStep));
-    private JSpinner heightSpinner = new JSpinner(new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, spinnerStep));
-    private JSpinner gridSizeSpinner = new JSpinner(new SpinnerNumberModel(cellSize, 1, Integer.MAX_VALUE,spinnerStep));
+    private JSpinner widthSpinner = new JSpinner(new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, SPINNER_STEP));
+    private JSpinner heightSpinner = new JSpinner(new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, SPINNER_STEP));
+    private JSpinner gridSizeSpinner = new JSpinner(new SpinnerNumberModel(CELL_SIZE, 1, Integer.MAX_VALUE, SPINNER_STEP));
     //==================
-    private JButton crossWayButton = new JButton(wayButtonIcon);
-    private JCheckBox drawGrid = new JCheckBox(drawGridLabel, drawGreed);
+    private JCheckBox drawGrid = new JCheckBox(DRAW_GRID_LABEL, DRAW_GREED);
     //==================
 
 
@@ -97,13 +97,13 @@ public class JMapEditScreen extends JFrame {
 
         addWindowListener(new BasicWindowMonitor());
 
-        setExtendedState(startupState);
-        setSize(width, height);
-        setMinimumSize(new Dimension(minWidth,minHeight));
+        setExtendedState(STARTUP_SATE);
+        setSize(WIDTH, HEIGHT);
+        setMinimumSize(new Dimension(MIN_WIDTH, MIN_HEIGHT));
 
         //workAria initialization
-        workAria.setBorderCellWidth(cellBorderWidth);
-        workAria.setCellSize(cellSize);
+        workAria.setBorderCellWidth(CELL_BORDER_WIDTH);
+        workAria.setCellSize(CELL_SIZE);
         workAria.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
 
         //containerWorkAria initialization
@@ -116,39 +116,6 @@ public class JMapEditScreen extends JFrame {
 
         workAria.setLayout(null);
 
-        /*JCrossWay jCrossWay = new JCrossWay(6,200,0);
-        jCrossWay.setPosition(10,10);
-
-        workAria.add(jCrossWay);*/
-
-        JRoad r1 = new JRoad(new Way(Direction.FORWARD), new Way(Direction.FORWARD), new Way(Direction.FORWARD), new Way(Direction.FORWARD));
-        JRoad r2 = new JRoad(new Way(Direction.FORWARD), new Way(Direction.FORWARD));
-
-
-        JCrossWay c1 = new JCrossWay(3, 0, 50);
-        c1.setPosition(10, 10);
-        //c1.attachRoad(0,r1,true);
-
-
-        JCrossWay c2 = new JCrossWay(3, 0, 50);
-        c2.setPosition(100, 100);
-        //c2.attachRoad(1, r1, false);
-        //c2.attachRoad(2, r2, true);
-
-
-        JCrossWay c3 = new JCrossWay(3, 0, 50);
-        c3.setPosition(400, 20);
-        c3.attachRoad(1, r2, false);
-
-
-        workAria.add(c1);
-        workAria.add(c2);
-
-        //workAria.add(c2);
-        //workAria.add(c3);
-
-        //workAria.add(r1);
-        //workAria.add(r2);
 
         containerWorkAria.add(workAria);
 
@@ -159,8 +126,6 @@ public class JMapEditScreen extends JFrame {
         panel.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
         panel.add(addMapObjectsButtons(toolBarInit()));
         getContentPane().add(panel, BorderLayout.EAST);
-
-
         LOGGER.trace("Screen has been created.");
     }
 
@@ -170,33 +135,33 @@ public class JMapEditScreen extends JFrame {
         toolBar.setLayout(new VerticalBagLayout());
         toolBar.setBorder(BorderFactory.createEmptyBorder());
 
-        widthSpinner.setPreferredSize(new Dimension(componentWidth,componentHeight));
+        widthSpinner.setPreferredSize(new Dimension(COMPONENT_WIDTH, COMPONENT_HEIGHT));
         widthSpinner.addChangeListener(sizeChangeListener);
         widthSpinner.setEnabled(false);
 
-        JLabel widthSpinnerLabel = new JLabel(widthSliderLabel);
-        widthSpinnerLabel.setPreferredSize(new Dimension(componentWidth,componentHeight));
+        JLabel widthSpinnerLabel = new JLabel(WIDTH_SLIDER_LABEL);
+        widthSpinnerLabel.setPreferredSize(new Dimension(COMPONENT_WIDTH, COMPONENT_HEIGHT));
 
 
-        heightSpinner.setPreferredSize(new Dimension(componentWidth,componentHeight));
+        heightSpinner.setPreferredSize(new Dimension(COMPONENT_WIDTH, COMPONENT_HEIGHT));
         heightSpinner.addChangeListener(sizeChangeListener);
         heightSpinner.setEnabled(false);
 
-        JLabel heightSpinnerLabel = new JLabel(heightSliderLabel);
-        heightSpinnerLabel.setPreferredSize(new Dimension(componentWidth,componentHeight));
+        JLabel heightSpinnerLabel = new JLabel(HEIGHT_SLIDER_LABEL);
+        heightSpinnerLabel.setPreferredSize(new Dimension(COMPONENT_WIDTH, COMPONENT_HEIGHT));
 
-        gridSizeSpinner.setPreferredSize(new Dimension(componentWidth,componentHeight));
+        gridSizeSpinner.setPreferredSize(new Dimension(COMPONENT_WIDTH, COMPONENT_HEIGHT));
         gridSizeSpinner.addChangeListener(gridSizeChangeListener);
-        JLabel gridSizeSpinnerLabel = new JLabel(gridSizeLabel);
-        gridSizeSpinnerLabel.setPreferredSize(new Dimension(componentWidth,componentHeight));
+        JLabel gridSizeSpinnerLabel = new JLabel(GRID_SIZE_LABEL);
+        gridSizeSpinnerLabel.setPreferredSize(new Dimension(COMPONENT_WIDTH, COMPONENT_HEIGHT));
 
 
-        drawGrid.setPreferredSize(new Dimension(componentWidth,componentHeight));
+        drawGrid.setPreferredSize(new Dimension(COMPONENT_WIDTH, COMPONENT_HEIGHT));
         toolBar.add(drawGrid);
 
 
         JPanel workAriaSettingsPanel = new JPanel();
-        workAriaSettingsPanel.setBorder(new TitledBorder(workAriaSettingsLabel));
+        workAriaSettingsPanel.setBorder(new TitledBorder(WORK_ARIA_SETTINGS_LABEL));
         JPanel innerPanel = new JPanel(new VerticalBagLayout());
 
 
@@ -215,17 +180,30 @@ public class JMapEditScreen extends JFrame {
         return toolBar;
     }
 
+    private ActionListener createJCrossWayAction = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (getMap() != null) {
+
+            }
+        }
+    };
+
+
     private JPanel addMapObjectsButtons(JPanel toolBar) {
-        crossWayButton.setPreferredSize(new Dimension(mapObjectButtonWidth,mapObjectButtonHeight));
 
         JPanel mapObjectsPanel = new JPanel();
-        mapObjectsPanel.setBorder(new TitledBorder(workAriaMapObjectsLabel));
-        JPanel innerPanel = new JPanel(new VerticalBagLayout());
-
-        innerPanel.add(crossWayButton);
-        mapObjectsPanel.add(innerPanel);
+        mapObjectsPanel.setBorder(new TitledBorder(WORK_ARIA_MAP_OBJECTS_LABEL));
+        mapObjectsPanel.add(toolBarButtonsPanel);
         toolBar.add(mapObjectsPanel);
         return toolBar;
+    }
+
+    public void addToolBarButtons(List<JToolBarButton> buttonList) {
+        for (JToolBarButton jToolBarButton : buttonList) {
+            jToolBarButton.setPreferredSize(new Dimension(MAP_OBJECT_BUTTON_HEIGHT, MAP_OBJECT_BUTTON_WIDTH));
+            toolBarButtonsPanel.add(jToolBarButton);
+        }
     }
 
 
@@ -252,6 +230,10 @@ public class JMapEditScreen extends JFrame {
             }
         }
     };
+
+    public JGridPanel getWorkAria() {
+        return workAria;
+    }
 
     private ChangeListener sizeChangeListener = new ChangeListener() {
         @Override
@@ -282,5 +264,10 @@ public class JMapEditScreen extends JFrame {
         widthSpinner.setEnabled(true);
     }
 
+    public static void createDefaultButtons(JMapEditScreen jMapEditScreen) {
+        LinkedList<JToolBarButton> jToolBarButtons = new LinkedList<JToolBarButton>();
+        jToolBarButtons.add(new JCrossWayToolBarButton(jMapEditScreen.getWorkAria()));
+        jMapEditScreen.addToolBarButtons(jToolBarButtons);
+    }
 
 }
