@@ -125,7 +125,7 @@ public class JGridPanel extends JPanel implements ComponentContainer, CrossWayCo
     public void crossWayActivated(JCrossWay jCrossWay, int place) {
         synchronized (this) {
             ActiveWayEntry second = new ActiveWayEntry(jCrossWay, place);
-            if (first == null) {
+            if ((first == null) || first.equals(second)) {
                 first = second;
                 first.getjCrossWay().setActiveConnector(place);
             } else {

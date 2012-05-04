@@ -157,6 +157,9 @@ public class JCrossWay extends JComponent implements WorkComponent {
             }
         }
 
+        if(road.getStart()==road.getEnd()){
+            throw new IllegalStateException("Road start and road end can't be the same JCrossWay.");
+        }
         roads[place] = new RoadEntry(road, toStart);
 
         updateState(true);
