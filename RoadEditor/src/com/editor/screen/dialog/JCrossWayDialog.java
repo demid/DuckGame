@@ -17,6 +17,8 @@ import java.awt.event.KeyEvent;
  */
 public class JCrossWayDialog extends JDialog {
     //Settings from properties file
+    private static final boolean DIALOG_AUTO_POSITION = Properties.getBoolean(Properties.Settings.DIALOG_AUTO_POSITION);
+
     private static final int DIALOG_WIDTH = Properties.getInt(Properties.Settings.JCW_DIALOG_WIDTH);
     private static final int DIALOG_BORDER_WIDTH = Properties.getInt(Properties.Settings.JCW_DIALOG_BORDER_WIDTH);
     private static final int DIALOG_HEIGHT = Properties.getInt(Properties.Settings.JCW_DIALOG_HEIGHT);
@@ -108,6 +110,9 @@ public class JCrossWayDialog extends JDialog {
     }
 
     public boolean showDialog() {
+        if (DIALOG_AUTO_POSITION) {
+            setLocation(MouseInfo.getPointerInfo().getLocation().x - getWidth() / 2, MouseInfo.getPointerInfo().getLocation().y - getHeight() / 2);
+        }
         setVisible(true);
         return result;
     }
