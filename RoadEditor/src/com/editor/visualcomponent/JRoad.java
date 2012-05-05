@@ -1,6 +1,7 @@
 package com.editor.visualcomponent;
 
 import com.editor.res.Properties;
+import com.editor.screen.ComponentContainer;
 import com.game.roadnetwork.Way;
 import com.game.util.Coordinate;
 import com.game.util.MathLine;
@@ -20,7 +21,7 @@ import java.util.List;
  *
  * @author: Alexey
  */
-public class JRoad extends JComponent implements WorkComponent{
+public class JRoad extends JComponent implements WorkComponent {
     private final static Logger LOGGER = Logger.getLogger(JRoad.class);
     private int selectionPolygonWidth = Properties.getInt(Properties.Settings.JR_COMPONENT_SELECTION_POLYGON_WIDTH);
 
@@ -29,6 +30,8 @@ public class JRoad extends JComponent implements WorkComponent{
     private JCrossWay end;
     private boolean selected = false;
     private java.util.List<WayEntry> waysList = new ArrayList();
+    private ComponentContainer componentContainer;
+    private boolean onLine = false;
 
     public JRoad(Way... ways) {
         for (Way way : ways) {
@@ -133,12 +136,18 @@ public class JRoad extends JComponent implements WorkComponent{
     }
 
 
-    private boolean onLine = false;
-
+    public ComponentContainer getComponentContainer() {
+        return componentContainer;
+    }
 
     @Override
     public JComponent getComponent() {
         return this;
+    }
+
+    @Override
+    public void setContainer(ComponentContainer container) {
+        this.componentContainer = container;
     }
 
     @Override
@@ -208,6 +217,18 @@ public class JRoad extends JComponent implements WorkComponent{
     @Override
     public boolean isSelected() {
         return selected;
+    }
+
+    @Override
+    public void delete() {
+        JCrossWay startCrossWay = getStart();
+        if (startCrossWay != null) {
+            startCrossWay.detachRoad(this);
+        }
+        JCrossWay endCrossWay = getEnd();
+        if (endCrossWay != null) {
+            endCrossWay.detachRoad(this);
+        }
     }
 
     class WayEntry {

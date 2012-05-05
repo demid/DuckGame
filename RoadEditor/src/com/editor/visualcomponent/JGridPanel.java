@@ -8,10 +8,7 @@ import org.apache.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.InputEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
+import java.awt.event.*;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -35,6 +32,12 @@ public class JGridPanel extends JPanel implements ComponentContainer, CrossWayCo
     private boolean drawGrid = true;
     private LinkedList<WorkComponent> workComponents = new LinkedList<WorkComponent>();
     private JGlassComponent jGlassComponent = new JGlassComponent(workComponents);
+    private ActiveWayEntry first;
+
+    public JGridPanel() {
+        add(jGlassComponent);
+    }
+
 
     @Override
     public void setBounds(int x, int y, int width, int height) {
@@ -47,14 +50,12 @@ public class JGridPanel extends JPanel implements ComponentContainer, CrossWayCo
         super.addImpl(comp, constraints, index);
         if (comp instanceof WorkComponent) {
             workComponents.add((WorkComponent) comp);
+            ((WorkComponent) comp).setContainer(this);
         } else {
             LOGGER.warn(comp.getClass().getName() + " doesn't implement WorkComponent. Mouse events isn't available for it. ");
         }
     }
 
-    public JGridPanel() {
-        add(jGlassComponent);
-    }
 
     public int getCellSize() {
         return cellSize;
@@ -91,6 +92,7 @@ public class JGridPanel extends JPanel implements ComponentContainer, CrossWayCo
         this.drawGrid = drawGrid;
     }
 
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -116,24 +118,36 @@ public class JGridPanel extends JPanel implements ComponentContainer, CrossWayCo
 
             if (workComponent.isSelected()) {
                 workComponent.setSelected(false);
+                LOGGER.trace(workComponent+" has been unselected.");
             } else {
                 workComponent.setSelected(true);
+                LOGGER.trace(workComponent+" has been selected.");
             }
             workComponent.getComponent().repaint();
             if (!e.isShiftDown()) {
                 for (WorkComponent component : workComponents) {
                     if ((component != workComponent) && (component.isSelected())) {
                         component.setSelected(false);
+                        LOGGER.trace(component+" has been unselected.");
                         component.getComponent().repaint();
                     }
                 }
             }
-            LOGGER.trace("Selected " + e + workComponent);
+
         }
     }
 
+    @Override
+    public void deleteComponent(WorkComponent workComponent) {
+        if (workComponent == null) {
+            throw new IllegalArgumentException(new NullPointerException("'workComponent' can't be null."));
+        }
+        workComponent.delete();
+        remove(workComponent.getComponent());
+        workComponents.remove(workComponent);
+        LOGGER.trace(workComponent+" has been deleted.");
+    }
 
-    private ActiveWayEntry first;
 
     @Override
     public void crossWayActivated(JCrossWay jCrossWay, int place) {
@@ -206,16 +220,34 @@ public class JGridPanel extends JPanel implements ComponentContainer, CrossWayCo
         private JGlassComponent(LinkedList<WorkComponent> workComponents) {
             this.workComponents = workComponents;
             setOpaque(false);
+            setFocusable(true);
             addMouseListener(this);
             addMouseMotionListener(this);
             if (this.workComponents == null) {
                 this.workComponents = new LinkedList<WorkComponent>();
             }
+            getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), "DELETE_SELECTED");
+            getActionMap().put("DELETE_SELECTED", deleteAction);
         }
 
+        private AbstractAction deleteAction = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                LOGGER.trace("Trying to delete selected components.");
+                WorkComponent[] components = new WorkComponent[workComponents.size()];
+                workComponents.toArray(components);
+                for (WorkComponent workComponent : components) {
+                    if (workComponent.isSelected()) {
+                        deleteComponent(workComponent);
+                    }
+                }
+                repaint();
+            }
+        };
 
         @Override
         public void mouseClicked(MouseEvent e) {
+            requestFocus();
             Iterator<WorkComponent> iterator = workComponents.iterator();
             while (iterator.hasNext()) {
                 WorkComponent workComponent = iterator.next();

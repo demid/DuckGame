@@ -1,6 +1,7 @@
 package com.editor.visualcomponent;
 
 import com.editor.res.Properties;
+import com.editor.screen.ComponentContainer;
 import com.editor.screen.CrossWayContainer;
 import com.editor.screen.dialog.JCrossWayDialog;
 import com.game.util.Coordinate;
@@ -42,6 +43,7 @@ public class JCrossWay extends JComponent implements WorkComponent {
     private boolean selected = false;
     private MathPolygon selectionPolygon;
     private Map<Integer, Rectangle> activeConnectors = new HashMap<Integer, Rectangle>();
+    private ComponentContainer componentContainer;
     //==================================
 
 
@@ -64,6 +66,15 @@ public class JCrossWay extends JComponent implements WorkComponent {
     @Override
     public JComponent getComponent() {
         return this;
+    }
+
+    @Override
+    public void setContainer(ComponentContainer container) {
+        this.componentContainer = container;
+    }
+
+    public ComponentContainer getComponentContainer() {
+        return componentContainer;
     }
 
     public JCrossWay(int maxPlaces, double angle, double scale) {
@@ -97,6 +108,15 @@ public class JCrossWay extends JComponent implements WorkComponent {
     @Override
     public boolean isSelected() {
         return selected;
+    }
+
+    @Override
+    public void delete() {
+       for(RoadEntry roadEntry:roads){
+           if(roadEntry!=null){
+               getComponentContainer().deleteComponent(roadEntry.getRoad());
+           }
+       }
     }
 
     @Override
@@ -154,6 +174,21 @@ public class JCrossWay extends JComponent implements WorkComponent {
 
         updateState(true);
         return this;
+    }
+
+    public JCrossWay detachRoad(JRoad jRoad) {
+        int place = roads.length;
+        for (int i = 0; i < roads.length; i++) {
+            if ((roads[i]!=null)&&roads[i].getRoad().equals(jRoad)) {
+                place = i;
+                break;
+            }
+        }
+        if (place == roads.length) {
+            throw new IllegalArgumentException("There is no such road in this crossWay.");
+
+        }
+        return detachRoad(place);
     }
 
     public JCrossWay detachRoad(int place) {

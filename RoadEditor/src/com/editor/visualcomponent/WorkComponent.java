@@ -1,5 +1,7 @@
 package com.editor.visualcomponent;
 
+import com.editor.screen.ComponentContainer;
+
 import javax.swing.*;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
@@ -13,6 +15,8 @@ import java.awt.event.MouseEvent;
 public interface WorkComponent {
 
     public JComponent getComponent();
+
+    public void setContainer(ComponentContainer container);
 
     public boolean doubleClicked(MouseEvent e);
 
@@ -35,4 +39,6 @@ public interface WorkComponent {
     public void setSelected(boolean selected);
 
     public boolean isSelected();
+
+    public void delete();
 }
